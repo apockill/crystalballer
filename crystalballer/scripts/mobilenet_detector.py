@@ -1,5 +1,4 @@
-"""A helper script for connecting to the Oak-D and visualizing output"""
-
+"""Detect objects in the camera feed using the MobileNet SSD model"""
 
 import blobconverter
 import cv2
