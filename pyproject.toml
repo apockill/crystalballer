@@ -30,7 +30,7 @@ flake8-use-pathlib = "^0.3.0"
 flake8-noqa = "^1.3.0"
 
 [tool.poetry.scripts]
-run_oakd = "crystalballer.scripts.run_oakd:main"
+oakd_tester = "crystalballer.scripts.oakd_tester:main"
 
 [build-system]
 requires = ["poetry>=0.12"]
