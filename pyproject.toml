@@ -2,7 +2,7 @@
 name = "crystalballer"
 version = "0.1.0"
 description = "Combining projection mapping and head tracking to make awesome mystical interactive displays!"
-authors = ["apockill <apocthiel@gmail.com>"]
+authors = ["Alex Thiele <apocthiel@gmail.com>"]
 license = "Proprietary"
 readme = "README.md"
 
