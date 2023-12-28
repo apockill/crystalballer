@@ -13,6 +13,18 @@ _________________
 [Read Latest Documentation](https://apockill.github.io/crystalballer/) - [Browse GitHub Code Repository](https://github.com/apockill/crystalballer/)
 _________________
 
+## Running the Project
+
+To run this project, simply have docker installed (preferably with nvidia-docker support), 
+and run the following command, where you can replace COMMAND with the script
+you'd like to run in the environment:
+
+```shell
+xhost + && docker compose run --build crystalballer COMMAND
+```
+
+This will build, run, and execute the container with the main project script. 
+
 ## Development
 
 ### Installing python dependencies

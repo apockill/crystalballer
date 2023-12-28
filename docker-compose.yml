@@ -1,0 +1,24 @@
+services:
+  crystalballer:
+    image: crystalballer
+#    command: 'echo "You must manually set your desired script. For example, "'
+    volumes:
+      # Give access to the camera USB device and maybe other hardware
+      - "/dev:/dev"
+      # Necessary for display passthrough
+      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+      # Audio passthrough
+      - "/run/user/${USER_ID:-1000}/pulse/native:/pulse-socket"
+      - "~/.config/pulse/cookie:/root/.config/pulse/cookie:ro"
+      # Model download caches
+      - ".docker_cache/.cache/:/root/.cache/"
+    environment:
+      # Necessary for display passthrough
+      DISPLAY: $DISPLAY
+      # Audio passthrough
+      PULSE_SERVER: "unix:/pulse-socket"
+    device_cgroup_rules:
+      # As documented in https://docs.luxonis.com/projects/api/en/latest/install/#docker
+      - 'c 189:* rmw'
+    build:
+      context: .
