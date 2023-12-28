@@ -35,13 +35,12 @@ def main() -> None:
         default=0.3,
         type=float,
     )
-    # TODO: Significantly reduce top k (maybe 1, if we only want to detect one face)
     parser.add_argument(
         "-topk",
         "--keep_top_k",
-        default=750,
+        default=5,
         type=int,
-        help="set keep_top_k for results outputing.",
+        help="set keep_top_k for results outputting.",
     )
     args = parser.parse_args()
 
