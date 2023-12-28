@@ -10,6 +10,8 @@ services:
       # Audio passthrough
       - "/run/user/${USER_ID:-1000}/pulse/native:/pulse-socket"
       - "~/.config/pulse/cookie:/root/.config/pulse/cookie:ro"
+      # Model download caches
+      - ".docker_cache/.cache/:/root/.cache/"
     environment:
       # Necessary for display passthrough
       DISPLAY: $DISPLAY
