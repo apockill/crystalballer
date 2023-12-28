@@ -41,8 +41,8 @@ def main() -> None:
 
     with depthai.Device(pipeline) as device:
         # TODO: These can be blocking, if so desired
-        q_rgb = device.getOutputQueue(name="rgb")
-        q_nn = device.getOutputQueue(name="nn")
+        q_rgb = device.getOutputQueue(name="rgb", maxSize=1, blocking=False)
+        q_nn = device.getOutputQueue(name="nn", maxSize=1, blocking=False)
 
         frame = None
         detections = []
@@ -73,8 +73,8 @@ def main() -> None:
                     )
                 cv2.imshow("preview", frame)
 
-            if cv2.waitKey(1) == ord("q"):
-                break
+                if cv2.waitKey(1) == ord("q"):
+                    break
 
 
 if __name__ == "__main__":
