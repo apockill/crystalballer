@@ -3,7 +3,7 @@ name = "crystalballer"
 version = "0.1.0"
 description = "Combining projection mapping and head tracking to make awesome mystical interactive displays!"
 authors = ["Alex Thiele <apocthiel@gmail.com>"]
-license = "Proprietary"
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -28,6 +28,9 @@ flake8-implicit-str-concat = "^0.4.0"
 flake8-use-fstring = "^1.4"
 flake8-use-pathlib = "^0.3.0"
 flake8-noqa = "^1.3.0"
+
+[tool.poetry.scripts]
+run_oakd = "crystalballer.scripts.run_oakd:main"
 
 [build-system]
 requires = ["poetry>=0.12"]
