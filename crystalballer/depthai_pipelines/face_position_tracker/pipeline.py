@@ -48,7 +48,7 @@ class FacePositionPipeline:
     """The size of the crop of the full mono image before image manip"""
 
     # TODO: One possible optimization is to stop creating unecessary streams that go to the host
-    def __init__(self):
+    def __init__(self) -> None:
         self.pipeline = self._create_pipeline()
         self.pipeline.setOpenVINOVersion(version=dai.OpenVINO.Version.VERSION_2021_4)
 
@@ -63,23 +63,23 @@ class FacePositionPipeline:
         self.device.setLogOutputLevel(dai.LogLevel.INFO)
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
 
     @property
     def latest_face_detection(self) -> Optional[FaceDetection]:
         """The latest face detections from the NN"""
-        left_config: Optional[dai.ImageManipConfig] = self.left_config_queue.tryGet()
+        left_config = self.left_config_queue.tryGet()
         if left_config is not None:
             left_landmarks_nn_layer = (
-                self.left_landmarks_queue.get().getFirstLayerFp16()
+                self.left_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
             )
 
-        right_config: Optional[ImageManipConfig] = self.right_config_queue.tryGet()
+        right_config = self.right_config_queue.tryGet()
         if right_config is not None:
             right_landmarks_nn_layer = (
-                self.right_landmarks_queue.get().getFirstLayerFp16()
+                self.right_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
             )
 
         # TODO: This is a very hacky way of draining all the queues
@@ -94,8 +94,8 @@ class FacePositionPipeline:
         return calculate_face_detection_from_landmarks(
             left_landmarks=np.array(left_landmarks_nn_layer).reshape(5, 2),
             right_landmarks=np.array(right_landmarks_nn_layer).reshape(5, 2),
-            left_manip_config=left_config,
-            right_manip_config=right_config,
+            left_manip_config=left_config,  # type: ignore
+            right_manip_config=right_config,  # type: ignore
             crop_size=self.MONO_CROP_SIZE,
             stereo=self.stereo_inference,
         )

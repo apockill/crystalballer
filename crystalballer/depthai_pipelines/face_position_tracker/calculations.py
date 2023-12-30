@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 from depthai import ImageManipConfig
 
 from .detection import FaceDetection
@@ -6,8 +7,8 @@ from .stereo import StereoInference
 
 
 def calculate_face_detection_from_landmarks(
-    left_landmarks,
-    right_landmarks,
+    left_landmarks: npt.NDArray[np.float32],
+    right_landmarks: npt.NDArray[np.float32],
     left_manip_config: ImageManipConfig,
     right_manip_config: ImageManipConfig,
     crop_size: tuple[int, int],
@@ -58,7 +59,9 @@ def calculate_face_detection_from_landmarks(
 
 
 def landmark_to_pixels(
-    landmark, manip_config: ImageManipConfig, crop_size: tuple[int, int]
+    landmark: tuple[float, float],
+    manip_config: ImageManipConfig,
+    crop_size: tuple[int, int],
 ) -> tuple[int, int]:
     """Convert a landmark from 0-1 range to pixel coordinates"""
     width = manip_config.getCropXMax() - manip_config.getCropXMin()
@@ -72,7 +75,9 @@ def landmark_to_pixels(
 
 
 def calculate_landmark_depth(
-    landmark_cam_right, landmark_cam_left, stereo: StereoInference
+    landmark_cam_right: tuple[int, int],
+    landmark_cam_left: tuple[int, int],
+    stereo: StereoInference,
 ) -> tuple[float, float, float]:
     disparity = stereo.calculate_distance(landmark_cam_right, landmark_cam_left)
     print(disparity)
