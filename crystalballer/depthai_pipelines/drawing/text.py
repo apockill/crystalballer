@@ -24,7 +24,7 @@ class TextHelper:
 
         x, y = coords
         y_delta = 18
-        for i, line in enumerate(text):
+        for line in text:
             cv2.putText(
                 frame,
                 line,

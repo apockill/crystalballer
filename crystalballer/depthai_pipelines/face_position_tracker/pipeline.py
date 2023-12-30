@@ -1,6 +1,5 @@
-import re
 from functools import cached_property
-from typing import Any, Generator, Optional
+from typing import Any, Optional
 
 import blobconverter
 import depthai as dai
@@ -160,8 +159,7 @@ class FacePositionPipeline:
     def _create_mono_pipeline(
         self, pipeline: Pipeline, name: str, camera_socket: dai.CameraBoardSocket
     ) -> None:
-        """Create a face detection + landmark recognition pipeline for a single mono
-        camera"""
+        """Create a face detection + landmark recognition pipeline for a single mono"""
 
         # Pretty sure the Oak-D lite only supports up to 480p, check the logs
         resolution = dai.MonoCameraProperties.SensorResolution.THE_480_P
@@ -172,10 +170,12 @@ class FacePositionPipeline:
         actual_resolution = cam.getResolutionSize()
         assert actual_resolution == self.RESOLUTION, f"{actual_resolution=}"
 
-        # ImageManip for cropping (face detection NN requires input image of MONO_CROP_SIZE) and to change frame type
+        # ImageManip for cropping (face detection NN requires input image of
+        # MONO_CROP_SIZE) and to change frame type
         face_manip = pipeline.create(dai.node.ImageManip)
         face_manip.initialConfig.setResize(*self.MONO_CROP_SIZE)
-        # The NN model expects BGR input. By default ImageManip output type would be same as input (gray in this case)
+        # The NN model expects BGR input. By default ImageManip output type would be
+        # same as input (gray in this case)
         face_manip.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
         cam.out.link(face_manip.inputImage)
 
@@ -194,7 +194,8 @@ class FacePositionPipeline:
         cam_xout.setStreamName("mono_" + name)
         face_nn.passthrough.link(cam_xout.input)
 
-        # Script node will take the output from the NN as an input, get the first bounding box
+        # Script node will take the output from the NN as an input, get the first
+        # bounding box
         # and send ImageManipConfig to the manip_crop
         image_manip_script = pipeline.create(dai.node.Script)
         image_manip_script.inputs["nn_in"].setBlocking(False)
@@ -202,8 +203,8 @@ class FacePositionPipeline:
         face_nn.out.link(image_manip_script.inputs["nn_in"])
         image_manip_script.setScript(IMAGE_MANIPULATION_SCRIPT)
 
-        # This ImageManip will crop the mono frame based on the NN detections. Resulting image will be the cropped
-        # face that was detected by the face-detection NN.
+        # This ImageManip will crop the mono frame based on the NN detections. Resulting
+        # image will be the cropped face that was detected by the face-detection NN.
         manip_crop = pipeline.create(dai.node.ImageManip)
         face_nn.passthrough.link(manip_crop.inputImage)
         image_manip_script.outputs["to_manip"].link(manip_crop.inputConfig)

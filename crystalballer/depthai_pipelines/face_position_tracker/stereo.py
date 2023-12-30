@@ -1,5 +1,4 @@
 import math
-from typing import cast
 
 import depthai as dai
 import numpy as np
@@ -13,14 +12,14 @@ class StereoInference:
         width: int,
         height: int,
     ) -> None:
-        calibData = device.readCalibration()
-        baseline = calibData.getBaselineDistance(useSpecTranslation=True) * 10  # mm
+        calib_data = device.readCalibration()
+        baseline = calib_data.getBaselineDistance(useSpecTranslation=True) * 10  # mm
 
         # Original mono frames shape
         assert resolution == (640, 480)
         self.original_width, self.original_height = resolution
 
-        self.hfov = calibData.getFov(dai.CameraBoardSocket.RIGHT)
+        self.hfov = calib_data.getFov(dai.CameraBoardSocket.RIGHT)
 
         focal_length = self.get_focal_length_pixels(self.original_width, self.hfov)
         self.disp_scale_factor = baseline * focal_length
@@ -29,7 +28,8 @@ class StereoInference:
         self.mono_width = width
         self.mono_height = height
         # Our coords are normalized for 300x300 image. 300x300 was downscaled from
-        # 720x720 (by ImageManip), so we need to multiple coords by 2.4 to get the correct disparity.
+        # 720x720 (by ImageManip), so we need to multiple coords by 2.4 to get the
+        # correct disparity.
         self.resize_factor = self.original_height / self.mono_height
 
     def get_focal_length_pixels(self, pixel_width: float, hfov: float) -> float:
@@ -42,8 +42,9 @@ class StereoInference:
             return 0.0  # Or inf?
 
     def calculate_distance(self, c1: tuple[int, int], c2: tuple[int, int]) -> float:
-        # Our coords are normalized for 300x300 image. 300x300 was downscaled from 720x720 (by ImageManip),
-        # so we need to multiple coords by 2.4 (if using 720P resolution) to get the correct disparity.
+        # Our coords are normalized for 300x300 image. 300x300 was downscaled from
+        # 720x720 (by ImageManip), so we need to multiple coords by 2.4 (if using 720P
+        # resolution) to get the correct disparity.
         c1_arr = np.array(c1) * self.resize_factor
         c2_arr = np.array(c2) * self.resize_factor
 

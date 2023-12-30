@@ -17,6 +17,7 @@ services:
       DISPLAY: $DISPLAY
       # Audio passthrough
       PULSE_SERVER: "unix:/pulse-socket"
+    network_mode: "host"  #  Recommended by luxonis docs for POE cameras
     device_cgroup_rules:
       # As documented in https://docs.luxonis.com/projects/api/en/latest/install/#docker
       - 'c 189:* rmw'
