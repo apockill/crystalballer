@@ -7,9 +7,7 @@ from crystalballer.depthai_pipelines.drawing import TextHelper
 def main() -> None:
     face_pipeline = FacePositionPipeline()
 
-    # Pipeline is defined, now we can connect to the device
-    with face_pipeline:  # tODO: Used to check openvino version
-        # Set device log level - to see logs from the Script node
+    with face_pipeline:
         text_helper = TextHelper()
 
         while True:
@@ -20,9 +18,8 @@ def main() -> None:
             # Combine the two mono frames
             combined = cv2.addWeighted(left_frame, 0.5, right_frame, 0.5, 0)
 
-            # 3D visualization
+            # Draw face information
             face_detection = face_pipeline.latest_face_detection
-
             if face_detection is not None:
                 strings = [
                     f"X: {face_detection.centroid[0]:.2f} m",
