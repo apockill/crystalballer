@@ -25,9 +25,9 @@ def main() -> None:
 
             if face_detection is not None:
                 strings = [
-                    "X: {:.2f} m".format(face_detection.centroid[0]),
-                    "Y: {:.2f} m".format(face_detection.centroid[1]),
-                    "Z: {:.2f} m".format(face_detection.centroid[2]),
+                    f"X: {face_detection.centroid[0]:.2f} m",
+                    f"Y: {face_detection.centroid[1]:.2f} m",
+                    f"Z: {face_detection.centroid[2]:.2f} m",
                 ]
                 text_helper.draw_text(combined, strings, (10, 10))
 
