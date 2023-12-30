@@ -33,6 +33,7 @@ while True:
         node.io['to_manip'].send(cfg)
         # node.warn(f"1 from nn_in: {det.xmin}, {det.ymin}, {det.xmax}, {det.ymax}")
 """
+
 FACE_DETECTION_MODEL = "face-detection-retail-0004"
 LANDMARKS_MODEL = "landmarks-regression-retail-0009"
 OPENVINO_VERSION = "2021.4"
@@ -66,9 +67,23 @@ class FacePositionPipeline:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
 
-    @property
-    def latest_face_detection(self) -> Optional[FaceDetection]:
-        """The latest face detections from the NN"""
+    def get_latest_face(
+        self, drain_frame_queues: bool = True
+    ) -> Optional[FaceDetection]:
+        """The latest face detections from the NN
+
+        :param drain_frame_queues: If True, image queues will be created for the left
+            and right mono cameras. However, if set to True then it's up to the user of
+            the pipeline to ensure that the left_frame_queue and right_frame_queue are
+            drained. Otherwise, face detection will freeze.
+        :return: The latest face detection, or None if no face was detected
+        """
+
+        if drain_frame_queues:
+            # For some reason, if we don't drain the queues then the NNs will freeze
+            self.left_frame_queue.get()
+            self.right_frame_queue.get()
+
         left_config = self.left_config_queue.tryGet()
         if left_config is not None:
             left_landmarks_nn_layer = (
