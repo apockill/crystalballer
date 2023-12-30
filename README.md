@@ -15,15 +15,24 @@ _________________
 
 ## Running the Project
 
-To run this project, simply have docker installed (preferably with nvidia-docker support), 
-and run the following command, where you can replace COMMAND with the script
-you'd like to run in the environment:
+To run this project, simply have docker installed, and run the following command, where 
+you can replace COMMAND with the script you'd like to run in the docker environment:
 
 ```shell
-xhost + && docker compose run --build crystalballer COMMAND
+./run COMMAND
 ```
 
-This will build, run, and execute the container with the main project script. 
+This will build, run, and execute the container with the main project script. It will 
+also enable X11 Forwarding, so that visuals can pass through the docker container.
+
+Usable scripts can be found in the `scripts` section of the `pyproject.toml`.
+
+### Validating GPU works
+You can check if your docker installation works with GPU by seeing if nvidia-smi works
+correctly. You can do this by running the following command:
+```shell
+./run nvidia-smi
+```
 
 ## Development
 
