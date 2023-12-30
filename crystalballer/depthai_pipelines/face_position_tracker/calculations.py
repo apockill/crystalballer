@@ -80,7 +80,6 @@ def calculate_landmark_depth(
     stereo: StereoInference,
 ) -> tuple[float, float, float]:
     disparity = stereo.calculate_distance(landmark_cam_right, landmark_cam_left)
-    print(disparity)
     depth = stereo.calculate_depth(disparity)
     # TODO: Why calculate spatials of the right camera??
     return stereo.calc_spatials(landmark_cam_left, depth)

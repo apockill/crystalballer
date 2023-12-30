@@ -121,7 +121,6 @@ class FacePositionPipeline:
     @cached_property
     def left_landmarks_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        print("Creating queue!")
         return self.device.getOutputQueue("landmarks_left", maxSize=4, blocking=False)
 
     @cached_property
