@@ -17,7 +17,7 @@ class TextHelper:
         frame: npt.NDArray[np.uint8],
         text: Union[str, list[str]],
         coords: tuple[int, int],
-    ):
+    ) -> None:
         """Draw multiline strings on a frame, on a specific top-left coordinate"""
         if isinstance(text, str):
             text = text.split("\n")
