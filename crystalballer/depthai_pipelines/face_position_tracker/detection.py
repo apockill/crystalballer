@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import cast
 
 import numpy as np
 import numpy.typing as npt
@@ -15,3 +16,15 @@ class FaceDetection:
 
     landmarks: npt.NDArray[np.float64]
     """(5, 3) The landmarks found on the face in meters, camera frame"""
+
+    @property
+    def x(self) -> float:
+        return cast(float, self.centroid[0])
+
+    @property
+    def y(self) -> float:
+        return cast(float, self.centroid[1])
+
+    @property
+    def z(self) -> float:
+        return cast(float, self.centroid[2])

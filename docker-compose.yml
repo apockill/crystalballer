@@ -11,7 +11,7 @@ services:
       - "/run/user/${USER_ID:-1000}/pulse/native:/pulse-socket"
       - "~/.config/pulse/cookie:/root/.config/pulse/cookie:ro"
       # Model download caches
-      - ".docker_cache/.cache/:/root/.cache/"
+      - ".docker_cache/.cache/blobconverter:/root/.cache/blobconverter"
     environment:
       # Necessary for display passthrough
       DISPLAY: $DISPLAY

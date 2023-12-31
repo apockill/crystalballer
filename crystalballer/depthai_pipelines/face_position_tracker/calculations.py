@@ -1,3 +1,5 @@
+from typing import cast
+
 import numpy as np
 import numpy.typing as npt
 from depthai import ImageManipConfig
@@ -41,10 +43,13 @@ def calculate_face_detection_from_landmarks(
         right_landmark_pix = landmark_to_pixels(
             right_landmark, right_manip_config, crop_size
         )
+        for pix in (left_landmark_pix, right_landmark_pix):
+            assert pix[0] >= 0 and pix[0] <= crop_size[0]
+            assert pix[1] >= 0 and pix[1] <= crop_size[1]
 
         xyz = calculate_landmark_depth(
-            landmark_cam_right=left_landmark_pix,
-            landmark_cam_left=right_landmark_pix,
+            landmark_cam_right=right_landmark_pix,
+            landmark_cam_left=left_landmark_pix,
             stereo=stereo,
         )
         spatials.append(xyz)
@@ -69,8 +74,8 @@ def landmark_to_pixels(
     # assert width == 640, f"width: {width}"
     # assert height == 480, f"height: {height}"
 
-    x = int((landmark[0] * width + manip_config.getCropXMin()) * crop_size[0])
-    y = int((landmark[1] * height + manip_config.getCropYMin()) * crop_size[1])
+    x = int(round((landmark[0] * width + manip_config.getCropXMin()) * crop_size[0]))
+    y = int(round((landmark[1] * height + manip_config.getCropYMin()) * crop_size[1]))
     return (x, y)
 
 
@@ -81,5 +86,10 @@ def calculate_landmark_depth(
 ) -> tuple[float, float, float]:
     disparity = stereo.calculate_distance(landmark_cam_right, landmark_cam_left)
     depth = stereo.calculate_depth(disparity)
-    # TODO: Why calculate spatials of the right camera??
-    return stereo.calc_spatials(landmark_cam_left, depth)
+
+    # Averaging the two landmarks ensures the depth is "centered" around the center of
+    # the camera, and not one of the cameras.
+    landmark_cam_avg = tuple(
+        int(round((landmark_cam_right[i] + landmark_cam_left[i]) / 2)) for i in range(2)
+    )
+    return stereo.calc_spatials(cast(tuple[int, int], landmark_cam_avg), depth)

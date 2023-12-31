@@ -1,30 +1,51 @@
-import faulthandler
-from copy import deepcopy
 from typing import List, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
 import open3d as o3d
-from open3d.visualization import ViewControl
+from open3d.visualization import gui, rendering
 
 ARRAYABLE_POINT = Union[tuple[float, float, float], npt.NDArray[np.float64]]
 
 
-class NonblockingVisualizer:
-    def __init__(self, name: str = "Window") -> None:
-        faulthandler.enable(all_threads=True)
+class RendererVisualizer:
+    def __init__(self, name: str = "Window", width: int = 1920, height: int = 1080):
+        # We need to initialize the application, which finds the necessary shaders
+        # for rendering and prepares the cross-platform window abstraction.
+        self.app = gui.Application.instance
+        self.app.initialize()
 
-        self.vis: o3d.visualization.Visualizer = o3d.visualization.Visualizer()
-        self.vis.create_window(window_name=name)
+        self.window: gui.PyWindow = self.app.create_window(name, width, height)
+        self.widget_3d = gui.SceneWidget()
+        self.scene: rendering.Open3DScene = rendering.Open3DScene(self.window.renderer)
 
-        self.view: ViewControl = self.vis.get_view_control()
+        # Link things together
+        self.widget_3d.scene = self.scene
+        self.window.add_child(self.widget_3d)
+
+        self.default_material = rendering.MaterialRecord()
 
     def draw(self, geometries: Optional[List[o3d.geometry.Geometry]] = None) -> None:
         if geometries is not None:
-            self.vis.clear_geometries()
+            self.scene.clear_geometry()
 
             for i, geometry in enumerate(geometries):
-                self.vis.add_geometry(geometry=geometry, reset_bounding_box=False)
+                self.scene.add_geometry(
+                    name=str(i),
+                    geometry=geometry,
+                    material=self.default_material,
+                    add_downsampled_copy_for_fast_rendering=False,
+                )
 
-        self.vis.poll_events()
-        self.vis.update_renderer()
+        # Without this, `run_one_tick` will halt until mouse movement or keyboard press
+        self.window.post_redraw()
+        self.app.run_one_tick()
+
+    def set_camera(
+        self, center: ARRAYABLE_POINT, eye: ARRAYABLE_POINT, up: ARRAYABLE_POINT
+    ) -> None:
+        self.widget_3d.look_at(
+            np.array(center).reshape(3, 1).astype(np.float32),
+            np.array(eye).reshape(3, 1).astype(np.float32),
+            np.array(up).reshape(3, 1).astype(np.float32),
+        )

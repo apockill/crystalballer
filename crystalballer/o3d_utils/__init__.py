@@ -1,1 +1,1 @@
-from .visualizer import NonblockingVisualizer
+from .visualizer import RendererVisualizer

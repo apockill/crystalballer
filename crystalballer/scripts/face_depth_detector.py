@@ -1,7 +1,7 @@
 import cv2
 
 from crystalballer.depthai_pipelines import FacePositionPipeline
-from crystalballer.depthai_pipelines.drawing import TextHelper
+from crystalballer.drawing import TextHelper
 
 
 def main() -> None:
