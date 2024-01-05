@@ -10,15 +10,17 @@ def main() -> None:
 
     with face_pipeline:
         while True:
-            # 300x300 Mono image frames
-            left_frame = face_pipeline.left_frame_queue.get().getCvFrame()  # type: ignore
-            right_frame = face_pipeline.right_frame_queue.get().getCvFrame()  # type: ignore
+            face_detection = face_pipeline.get_latest_face()
+
+            if not face_detection:
+                continue
 
             # Combine the two mono frames
-            combined = cv2.addWeighted(left_frame, 0.5, right_frame, 0.5, 0)
+            combined = cv2.addWeighted(
+                face_detection.left_frame, 0.5, face_detection.right_frame, 0.5, 0
+            )
 
             # Draw face information
-            face_detection = face_pipeline.get_latest_face(drain_frame_queues=False)
             if face_detection is not None:
                 strings = [
                     f"X: {face_detection.centroid[0]:.2f} m",
