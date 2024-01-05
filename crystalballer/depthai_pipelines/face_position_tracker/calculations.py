@@ -37,6 +37,8 @@ def calculate_face_detection_from_landmarks(
 
     # TODO: Calculate spatials of the average of the face
     spatials: list[tuple[float, float, float]] = []
+    left_landmarks_pix = []
+    right_landmarks_pix = []
     for left_landmark, right_landmark in zip(left_landmarks, right_landmarks):
         assert left_landmark[0] >= 0.0 and left_landmark[0] <= 1.0
         assert right_landmark[1] >= 0.0 and right_landmark[1] <= 1.0
@@ -56,6 +58,8 @@ def calculate_face_detection_from_landmarks(
             landmark_cam_left=left_landmark_pix,
             stereo=stereo,
         )
+        left_landmarks_pix.append(left_landmark_pix)
+        right_landmarks_pix.append(right_landmark_pix)
         spatials.append(xyz)
 
     # Next, normalize to meter units and calculate the average of all the landmarks
@@ -64,8 +68,11 @@ def calculate_face_detection_from_landmarks(
     return FaceDetection(
         centroid=np.average(spatials_np, axis=0),
         landmarks=spatials_np,
+        left_landmarks_pix=np.array(left_landmarks_pix),
+        right_landmarks_pix=np.array(right_landmarks_pix),
         left_frame=left_frame,
         right_frame=right_frame,
+        stereo=stereo,
     )
 
 

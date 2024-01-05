@@ -4,6 +4,8 @@ from typing import cast
 import numpy as np
 import numpy.typing as npt
 
+from crystalballer.depthai_pipelines.face_position_tracker.stereo import StereoInference
+
 POINT = tuple[float, float, float]
 
 
@@ -17,11 +19,20 @@ class FaceDetection:
     landmarks: npt.NDArray[np.float64]
     """(5, 3) The landmarks found on the face in meters, camera frame"""
 
+    left_landmarks_pix: npt.NDArray[np.float64]
+    """(5, 2) The landmarks found on the face in pixels, left camera frame"""
+
+    right_landmarks_pix: npt.NDArray[np.float64]
+    """(5, 2) The landmarks found on the face in pixels, right camera frame"""
+
     left_frame: npt.NDArray[np.uint8]
     """(h, w) The left camera image"""
 
     right_frame: npt.NDArray[np.uint8]
     """(h, w) The right camera image"""
+
+    stereo: StereoInference
+    """The stereo inference and parameters that were used to extract this face"""
 
     @property
     def x(self) -> float:

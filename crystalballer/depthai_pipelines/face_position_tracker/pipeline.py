@@ -176,11 +176,9 @@ class FacePositionPipeline:
         """Create a face detection + landmark recognition pipeline for a single mono"""
 
         # Pretty sure the Oak-D lite only supports up to 480p, check the logs
-        resolution = dai.MonoCameraProperties.SensorResolution.THE_480_P
-
         cam = pipeline.create(dai.node.MonoCamera)
         cam.setBoardSocket(camera_socket)
-        cam.setResolution(resolution)
+        cam.setResolution(CAMERA_RESOLUTION)
         actual_resolution = cam.getResolutionSize()
         assert actual_resolution == self.RESOLUTION, f"{actual_resolution=}"
 

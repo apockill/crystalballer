@@ -5,37 +5,22 @@ import numpy as np
 import numpy.typing as npt
 
 
-class TextHelper:
-    def __init__(self) -> None:
-        self.bg_color = (0, 0, 0)
-        self.color = (255, 255, 255)
-        self.text_type = cv2.FONT_HERSHEY_SIMPLEX
-        self.line_type = cv2.LINE_AA
+def draw_text(
+    frame: npt.NDArray[np.uint8],
+    text: Union[str, list[str]],
+    coords: tuple[int, int],
+    bg_color: tuple[int, int, int] = (0, 0, 0),
+    color: tuple[int, int, int] = (255, 255, 255),
+    text_type: int = cv2.FONT_HERSHEY_SIMPLEX,
+    line_type: int = cv2.LINE_AA,
+) -> None:
+    """Draw multiline strings on a frame, on a specific top-left coordinate"""
+    if isinstance(text, str):
+        text = text.split("\n")
 
-    def draw_text(
-        self,
-        frame: npt.NDArray[np.uint8],
-        text: Union[str, list[str]],
-        coords: tuple[int, int],
-    ) -> None:
-        """Draw multiline strings on a frame, on a specific top-left coordinate"""
-        if isinstance(text, str):
-            text = text.split("\n")
-
-        x, y = coords
-        y_delta = 18
-        for line in text:
-            cv2.putText(
-                frame,
-                line,
-                (x, y),
-                self.text_type,
-                0.5,
-                self.bg_color,
-                4,
-                self.line_type,
-            )
-            cv2.putText(
-                frame, line, (x, y), self.text_type, 0.5, self.color, 1, self.line_type
-            )
-            y += y_delta
+    x, y = coords
+    y_delta = 18
+    for line in text:
+        cv2.putText(frame, line, (x, y), text_type, 0.5, bg_color, 4, line_type)
+        cv2.putText(frame, line, (x, y), text_type, 0.5, color, 1, line_type)
+        y += y_delta
