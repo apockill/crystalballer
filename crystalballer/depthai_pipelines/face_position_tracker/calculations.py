@@ -13,8 +13,9 @@ def calculate_face_detection_from_landmarks(
     right_landmarks: npt.NDArray[np.float32],
     left_manip_config: ImageManipConfig,
     right_manip_config: ImageManipConfig,
-    crop_size: tuple[int, int],
     stereo: StereoInference,
+    left_frame: npt.NDArray[np.uint8],
+    right_frame: npt.NDArray[np.uint8],
 ) -> FaceDetection:
     """
 
@@ -24,12 +25,15 @@ def calculate_face_detection_from_landmarks(
         0-1 range.
     :param left_manip_config: The image manipulation (crop, resize) config to the nn
     :param right_manip_config: The image manipulation (crop, resize) config to the nn
-    :param crop_size: The size of the crop of the full mono image before image manip
     :param stereo: A helper for extracting depth from the disparity
+    :param left_frame: The left image, to pack with the FaceDetection
+    :param right_frame: The right image, to pack with the FaceDetection
     :return: The average depth of the centroid of the face
     """
     assert left_landmarks.shape == (5, 2)
     assert right_landmarks.shape == (5, 2)
+    assert left_frame.shape == right_frame.shape
+    crop_size = (left_frame.shape[0], left_frame.shape[1])
 
     # TODO: Calculate spatials of the average of the face
     spatials: list[tuple[float, float, float]] = []
@@ -60,6 +64,8 @@ def calculate_face_detection_from_landmarks(
     return FaceDetection(
         centroid=np.average(spatials_np, axis=0),
         landmarks=spatials_np,
+        left_frame=left_frame,
+        right_frame=right_frame,
     )
 
 

@@ -17,6 +17,12 @@ class FaceDetection:
     landmarks: npt.NDArray[np.float64]
     """(5, 3) The landmarks found on the face in meters, camera frame"""
 
+    left_frame: npt.NDArray[np.uint8]
+    """(h, w) The left camera image"""
+
+    right_frame: npt.NDArray[np.uint8]
+    """(h, w) The right camera image"""
+
     @property
     def x(self) -> float:
         return cast(float, self.centroid[0])

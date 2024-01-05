@@ -67,22 +67,21 @@ class FacePositionPipeline:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
 
-    def get_latest_face(
-        self, drain_frame_queues: bool = True
-    ) -> Optional[FaceDetection]:
+    def get_latest_face(self) -> Optional[FaceDetection]:
         """The latest face detections from the NN
 
-        :param drain_frame_queues: If True, image queues will be created for the left
-            and right mono cameras. However, if set to True then it's up to the user of
-            the pipeline to ensure that the left_frame_queue and right_frame_queue are
-            drained. Otherwise, face detection will freeze.
         :return: The latest face detection, or None if no face was detected
         """
 
-        if drain_frame_queues:
-            # For some reason, if we don't drain the queues then the NNs will freeze
-            self.left_frame_queue.get()
-            self.right_frame_queue.get()
+        # For some reason, if we don't drain the queues then the NNs will freeze. So
+        # regardless of whether we want to pack frames into the FaceDetection, we need
+        # to drain the queues.
+        # These should be 300x300 mono images
+        left_image = self.left_frame_queue.get().getCvFrame()  # type: ignore
+        right_image = self.right_frame_queue.get().getCvFrame()  # type: ignore
+
+        assert left_image.shape == (*self.MONO_CROP_SIZE, 3), f"{left_image.shape=}"
+        assert right_image.shape == (*self.MONO_CROP_SIZE, 3), f"{right_image.shape=}"
 
         left_config = self.left_config_queue.tryGet()
         if left_config is not None:
@@ -110,8 +109,9 @@ class FacePositionPipeline:
             right_landmarks=np.array(right_landmarks_nn_layer).reshape(5, 2),
             left_manip_config=left_config,  # type: ignore
             right_manip_config=right_config,  # type: ignore
-            crop_size=self.MONO_CROP_SIZE,
             stereo=self.stereo_inference,
+            left_frame=left_image,
+            right_frame=right_image,
         )
 
     @cached_property
