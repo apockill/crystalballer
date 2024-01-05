@@ -33,6 +33,7 @@ while True:
         node.io['to_manip'].send(cfg)
         # node.warn(f"1 from nn_in: {det.xmin}, {det.ymin}, {det.xmax}, {det.ymax}")
 """
+
 FACE_DETECTION_MODEL = "face-detection-retail-0004"
 LANDMARKS_MODEL = "landmarks-regression-retail-0009"
 OPENVINO_VERSION = "2021.4"
@@ -66,9 +67,22 @@ class FacePositionPipeline:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
 
-    @property
-    def latest_face_detection(self) -> Optional[FaceDetection]:
-        """The latest face detections from the NN"""
+    def get_latest_face(self) -> Optional[FaceDetection]:
+        """The latest face detections from the NN
+
+        :return: The latest face detection, or None if no face was detected
+        """
+
+        # For some reason, if we don't drain the queues then the NNs will freeze. So
+        # regardless of whether we want to pack frames into the FaceDetection, we need
+        # to drain the queues.
+        # These should be 300x300 mono images
+        left_image = self.left_frame_queue.get().getCvFrame()  # type: ignore
+        right_image = self.right_frame_queue.get().getCvFrame()  # type: ignore
+
+        assert left_image.shape == (*self.MONO_CROP_SIZE, 3), f"{left_image.shape=}"
+        assert right_image.shape == (*self.MONO_CROP_SIZE, 3), f"{right_image.shape=}"
+
         left_config = self.left_config_queue.tryGet()
         if left_config is not None:
             left_landmarks_nn_layer = (
@@ -95,8 +109,9 @@ class FacePositionPipeline:
             right_landmarks=np.array(right_landmarks_nn_layer).reshape(5, 2),
             left_manip_config=left_config,  # type: ignore
             right_manip_config=right_config,  # type: ignore
-            crop_size=self.MONO_CROP_SIZE,
             stereo=self.stereo_inference,
+            left_frame=left_image,
+            right_frame=right_image,
         )
 
     @cached_property
@@ -121,7 +136,6 @@ class FacePositionPipeline:
     @cached_property
     def left_landmarks_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        print("Creating queue!")
         return self.device.getOutputQueue("landmarks_left", maxSize=4, blocking=False)
 
     @cached_property
@@ -162,11 +176,9 @@ class FacePositionPipeline:
         """Create a face detection + landmark recognition pipeline for a single mono"""
 
         # Pretty sure the Oak-D lite only supports up to 480p, check the logs
-        resolution = dai.MonoCameraProperties.SensorResolution.THE_480_P
-
         cam = pipeline.create(dai.node.MonoCamera)
         cam.setBoardSocket(camera_socket)
-        cam.setResolution(resolution)
+        cam.setResolution(CAMERA_RESOLUTION)
         actual_resolution = cam.getResolutionSize()
         assert actual_resolution == self.RESOLUTION, f"{actual_resolution=}"
 
