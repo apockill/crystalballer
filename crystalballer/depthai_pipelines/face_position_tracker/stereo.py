@@ -12,14 +12,14 @@ class StereoInference:
         width: int,
         height: int,
     ) -> None:
-        calib_data = device.readCalibration()
-        baseline = calib_data.getBaselineDistance(useSpecTranslation=True) * 10  # mm
+        calib_data: dai.CalibrationHandler = device.readCalibration()
+        baseline = calib_data.getBaselineDistance(useSpecTranslation=False) * 10  # mm
 
         # Original mono frames shape
-        assert resolution == (640, 480)
+        # assert resolution == (640, 400)  # This was what the original used
         self.original_width, self.original_height = resolution
 
-        self.hfov = calib_data.getFov(dai.CameraBoardSocket.RIGHT)
+        self.hfov = calib_data.getFov(dai.CameraBoardSocket.RIGHT, useSpec=False)
 
         focal_length = self.get_focal_length_pixels(self.original_width, self.hfov)
         self.disp_scale_factor = baseline * focal_length
@@ -39,6 +39,7 @@ class StereoInference:
         try:
             return self.disp_scale_factor / disparity_pixels
         except ZeroDivisionError:
+            print("Warning: Zero division error!")
             return 0.0  # Or inf?
 
     def calculate_distance(self, c1: tuple[int, int], c2: tuple[int, int]) -> float:

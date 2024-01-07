@@ -8,7 +8,7 @@ from open3d.visualization import gui, rendering
 ARRAYABLE_POINT = Union[tuple[float, float, float], npt.NDArray[np.float64]]
 
 
-class RendererVisualizer:
+class Visualizer:
     def __init__(self, name: str = "Window", width: int = 1920, height: int = 1080):
         # We need to initialize the application, which finds the necessary shaders
         # for rendering and prepares the cross-platform window abstraction.

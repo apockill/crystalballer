@@ -1,7 +1,6 @@
 services:
   crystalballer:
     image: crystalballer
-#    command: 'echo "You must manually set your desired script. For example, "'
     volumes:
       # Give access to the camera USB device and maybe other hardware
       - "/dev:/dev"

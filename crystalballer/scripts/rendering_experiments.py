@@ -3,7 +3,7 @@ import numpy as np
 import open3d as o3d
 
 from crystalballer.depthai_pipelines import FacePositionPipeline
-from crystalballer.o3d_utils import RendererVisualizer, VirtualCameraRenderer
+from crystalballer.o3d_utils import VirtualCameraRenderer
 
 
 def main() -> None:
