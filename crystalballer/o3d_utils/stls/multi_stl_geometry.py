@@ -34,12 +34,12 @@ class MultiSTLGeometry:
         # Apply the transform
         final_mesh.transform(self._current_transform)
 
-        # Normalize the mesh so the largest axis-aligned side is 1 meter
+        # Normalize the mesh so the largest axis-aligned side is _largest_side_length
         bounding_box: o3d.geometry.AxisAlignedBoundingBox = (
             final_mesh.get_axis_aligned_bounding_box()
         )
         largest_side = bounding_box.get_max_extent()
-        final_mesh.scale(1 / largest_side, final_mesh.get_center())
+        final_mesh.scale(self._largest_side_length / largest_side, final_mesh.get_center())
 
         return final_mesh
 
