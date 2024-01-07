@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
-
 import numpy as np
 import numpy.typing as npt
 import open3d as o3d
@@ -30,14 +28,7 @@ class VirtualCameraRenderer:
         self._width = intrinsics.width
         self._height = intrinsics.height
         self._o3d_intrinsics = intrinsics
-        # For some reason, the open3d renderer MUST be used in the same thread it was
-        # instantiated on. For that purpose, a thread pool with 1 worker is used.
-        self._render_executor = ThreadPoolExecutor(
-            max_workers=1, thread_name_prefix="MockDriver Render Thread"
-        )
-        self._o3d_renderer = self._render_executor.submit(
-            self._create_renderer
-        ).result()
+        self._o3d_renderer = self._create_renderer()
 
     def render(
         self,
@@ -52,14 +43,13 @@ class VirtualCameraRenderer:
             and depth is a (height, width)
         """
         self._o3d_renderer.scene.clear_geometry()
-        for geometry in geometries:
-            self._render_executor.submit(
-                self._o3d_renderer.scene.add_geometry,
-                name="Plank-Cloud",
+        for geometry_id, geometry in enumerate(geometries):
+            self._o3d_renderer.scene.add_geometry(
+                name=str(geometry_id),
                 geometry=geometry,
                 material=o3d.visualization.rendering.MaterialRecord(),
                 add_downsampled_copy_for_fast_rendering=False,
-            ).result()
+            )
 
         # For some reason the following two functions are okay to run in the main thread
         self._o3d_renderer.setup_camera(self._o3d_intrinsics, transform)
@@ -71,12 +61,8 @@ class VirtualCameraRenderer:
             self._height,
         )
 
-        color = self._render_executor.submit(
-            self._o3d_renderer.render_to_image
-        ).result()
-        depth = self._render_executor.submit(
-            self._o3d_renderer.render_to_depth_image, z_in_view_space=True
-        ).result()
+        color = self._o3d_renderer.render_to_image()
+        depth = self._o3d_renderer.render_to_depth_image(z_in_view_space=True)
 
         # Open3d gives distances as negative values, so we flip those values here
         depth = np.asarray(depth)
@@ -85,10 +71,6 @@ class VirtualCameraRenderer:
         depth[depth > self.truncate_depth] = np.nan
 
         return np.asarray(color), depth
-
-    def close(self) -> None:
-        """Close the renderer thread"""
-        self._render_executor.shutdown(wait=True)
 
     def _create_renderer(self) -> OffscreenRenderer:
         """Create an offscreen renderer"""
