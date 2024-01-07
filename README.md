@@ -15,6 +15,7 @@ _________________
 
 ## Running the Project
 
+### Setting up the Software
 To run this project, simply have docker installed, and run the following command, where 
 you can replace COMMAND with the script you'd like to run in the docker environment:
 
@@ -26,6 +27,12 @@ This will build, run, and execute the container with the main project script. It
 also enable X11 Forwarding, so that visuals can pass through the docker container.
 
 Usable scripts can be found in the `scripts` section of the `pyproject.toml`.
+
+### Setting up the Hardware
+
+1. Connect the Gakken display to the computer via HDMI, and set the resolution to 800x600.
+
+2. Connect the Oak-D Lite to the computer via USB.
 
 ### Validating GPU works
 You can check if your docker installation works with GPU by seeing if nvidia-smi works
