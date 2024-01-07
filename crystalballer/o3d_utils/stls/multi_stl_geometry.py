@@ -39,7 +39,9 @@ class MultiSTLGeometry:
             final_mesh.get_axis_aligned_bounding_box()
         )
         largest_side = bounding_box.get_max_extent()
-        final_mesh.scale(self._largest_side_length / largest_side, final_mesh.get_center())
+        final_mesh.scale(
+            self._largest_side_length / largest_side, final_mesh.get_center()
+        )
 
         return final_mesh
 
