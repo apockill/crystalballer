@@ -1,8 +1,6 @@
-from functools import cached_property
 from pathlib import Path
 
 import numpy as np
-import numpy.typing as npt
 import open3d as o3d
 
 
