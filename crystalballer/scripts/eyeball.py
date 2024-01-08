@@ -4,6 +4,7 @@ import open3d as o3d
 
 from crystalballer import constants
 from crystalballer.o3d_utils import VirtualCameraRenderer, Visualizer
+from crystalballer.o3d_utils.fullscreen_visualizer import FullScreenVisualizer
 from crystalballer.resources import GLOBE
 
 PROJECTOR_DISTANCE = constants.GAKKEN_RADIUS * 1.666
@@ -11,8 +12,8 @@ PROJECTOR_DISTANCE = constants.GAKKEN_RADIUS * 1.666
 open3d camera intrinsics
 """
 
-def main() -> None:
 
+def main() -> None:
     renderer = VirtualCameraRenderer(intrinsics=constants.GAKKEN_INTRINSICS)
 
     visualizer = Visualizer()
@@ -38,21 +39,13 @@ def main() -> None:
         eyeball,
     ]
 
-    WINDOW_NAME = "Projector"
-    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
+    cv2_visualizer = FullScreenVisualizer("Gakken View")
 
     while True:
         camera_position = np.eye(4)
         camera_position[:3, 3] = [0, 0, PROJECTOR_DISTANCE]
 
-        color_bgr, depth = renderer.render(camera_position, geometries)
-        cv2.imshow(WINDOW_NAME, color_bgr[..., ::-1])
-
-        # Compensate for the titlebar by moving the window up
-        cv2.moveWindow(WINDOW_NAME, 0, 0)
-        cv2.setWindowProperty(
-            WINDOW_NAME, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
-        )
-        cv2.waitKey(1)
+        color_rgb, depth = renderer.render(camera_position, geometries)
+        cv2_visualizer.show(color_rgb)
 
         visualizer.draw(geometries)
