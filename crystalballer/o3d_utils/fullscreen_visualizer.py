@@ -18,4 +18,7 @@ class FullScreenVisualizer:
         cv2.setWindowProperty(
             self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
         )
-        cv2.waitKey(1)
+        key = cv2.waitKey(1)
+
+        if key == ord("q"):
+            raise KeyboardInterrupt()
