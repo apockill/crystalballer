@@ -48,8 +48,10 @@ class FacePositionPipeline:
     """The size of the crop of the full mono image before image manip"""
 
     # TODO: One possible optimization is to stop creating unecessary streams that go to the host
-    def __init__(self) -> None:
+    def __init__(self, loglevel: dai.LogLevel = dai.LogLevel.WARN) -> None:
+        self.loglevel = loglevel
         self.pipeline = self._create_pipeline()
+
         self.pipeline.setOpenVINOVersion(version=dai.OpenVINO.Version.VERSION_2021_4)
 
         self.device = Device(self.pipeline.getOpenVINOVersion())
@@ -58,14 +60,16 @@ class FacePositionPipeline:
         """Open up the device and start outputting results to the queues"""
         self.device.__enter__()
         self.device.startPipeline(self.pipeline)
-
-        self.device.setLogLevel(dai.LogLevel.INFO)
-        self.device.setLogOutputLevel(dai.LogLevel.INFO)
+        self.device.setLogLevel(self.loglevel)
+        self.device.setLogOutputLevel(self.loglevel)
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
+
+    def close(self) -> None:
+        self.device.close()
 
     def get_latest_face(self) -> Optional[FaceDetection]:
         """The latest face detections from the NN
