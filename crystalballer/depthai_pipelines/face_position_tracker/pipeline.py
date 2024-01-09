@@ -81,8 +81,8 @@ class FacePositionPipeline:
         # regardless of whether we want to pack frames into the FaceDetection, we need
         # to drain the queues.
         # These should be 300x300 mono images
-        left_image = self.left_frame_queue.get().getCvFrame()  # type: ignore
-        right_image = self.right_frame_queue.get().getCvFrame()  # type: ignore
+        left_image = self.left_frame_queue.get().getCvFrame()
+        right_image = self.right_frame_queue.get().getCvFrame()
 
         assert left_image.shape == (*self.MONO_CROP_SIZE, 3), f"{left_image.shape=}"
         assert right_image.shape == (*self.MONO_CROP_SIZE, 3), f"{right_image.shape=}"
@@ -90,13 +90,13 @@ class FacePositionPipeline:
         left_config = self.left_config_queue.tryGet()
         if left_config is not None:
             left_landmarks_nn_layer = (
-                self.left_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
+                self.left_landmarks_queue.get().getFirstLayerFp16()
             )
 
         right_config = self.right_config_queue.tryGet()
         if right_config is not None:
             right_landmarks_nn_layer = (
-                self.right_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
+                self.right_landmarks_queue.get().getFirstLayerFp16()
             )
 
         # TODO: This is a very hacky way of draining all the queues
@@ -111,8 +111,8 @@ class FacePositionPipeline:
         return calculate_face_detection_from_landmarks(
             left_landmarks=np.array(left_landmarks_nn_layer).reshape(5, 2),
             right_landmarks=np.array(right_landmarks_nn_layer).reshape(5, 2),
-            left_manip_config=left_config,  # type: ignore
-            right_manip_config=right_config,  # type: ignore
+            left_manip_config=left_config,
+            right_manip_config=right_config,
             stereo=self.stereo_inference,
             left_frame=left_image,
             right_frame=right_image,
