@@ -1,7 +1,10 @@
+from copy import copy
+
 import numpy as np
 import open3d as o3d
 
 from crystalballer import constants
+from crystalballer.depthai_pipelines import FacePositionPipeline
 from crystalballer.o3d_utils import VirtualCameraRenderer, Visualizer
 from crystalballer.o3d_utils.fullscreen_visualizer import FullScreenVisualizer
 from crystalballer.resources import GLOBE
@@ -13,8 +16,11 @@ open3d camera intrinsics
 
 
 def main() -> None:
-    renderer = VirtualCameraRenderer(intrinsics=constants.GAKKEN_INTRINSICS)
 
+    # Create a camera, a fullscreen visualizer for the Gakken, and a 3d visualizer
+    # for easy debugging
+    cv2_visualizer = FullScreenVisualizer("Gakken View")
+    renderer = VirtualCameraRenderer(intrinsics=constants.GAKKEN_INTRINSICS)
     visualizer = Visualizer()
     visualizer.set_camera(
         eye=(0, 0, 0),
@@ -22,23 +28,12 @@ def main() -> None:
         up=(0, -1, 0),
     )
 
-    eyeball = o3d.geometry.TriangleMesh.create_sphere(radius=0.01)
-    eyeball.translate(
-        [
-            constants.GAKKEN_RADIUS / 2,
-            constants.GAKKEN_RADIUS / 2,
-            constants.GAKKEN_RADIUS + 0.01,
-        ]
-    )
-    eyeball.paint_uniform_color([1, 0, 0])
-
+    # Create geometries for the scene
+    eyeball = GLOBE.create_mesh()
     geometries = [
-        GLOBE.create_mesh(),
         o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.01),
-        eyeball,
     ]
 
-    cv2_visualizer = FullScreenVisualizer("Gakken View")
 
     while True:
         camera_position = np.eye(4)
