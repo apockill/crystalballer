@@ -34,6 +34,8 @@ Usable scripts can be found in the `scripts` section of the `pyproject.toml`.
 
 2. Connect the Oak-D Lite to the computer via USB.
 
+3. Set up the Gakken as the primary display, where it's the leftmost display.
+
 ### Validating GPU works
 You can check if your docker installation works with GPU by seeing if nvidia-smi works
 correctly. You can do this by running the following command:

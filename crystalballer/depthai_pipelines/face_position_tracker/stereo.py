@@ -1,4 +1,5 @@
 import math
+from typing import cast
 
 import depthai as dai
 import numpy as np
@@ -37,7 +38,7 @@ class StereoInference:
 
     def calculate_depth(self, disparity_pixels: float) -> float:
         try:
-            return self.disp_scale_factor / disparity_pixels
+            return cast(float, self.disp_scale_factor / disparity_pixels)
         except ZeroDivisionError:
             print("Warning: Zero division error!")
             return 0.0  # Or inf?
