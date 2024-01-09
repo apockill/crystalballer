@@ -12,7 +12,7 @@ class Visualizer:
     def __init__(self, name: str = "Window", width: int = 1920, height: int = 1080):
         # We need to initialize the application, which finds the necessary shaders
         # for rendering and prepares the cross-platform window abstraction.
-        self.app = gui.Application.instance
+        self.app: gui.Application = gui.Application.instance
         self.app.initialize()
 
         self.window: gui.PyWindow = self.app.create_window(name, width, height)
@@ -49,3 +49,6 @@ class Visualizer:
             np.array(eye).reshape(3, 1).astype(np.float32),
             np.array(up).reshape(3, 1).astype(np.float32),
         )
+
+    def close(self) -> None:
+        self.app.quit()

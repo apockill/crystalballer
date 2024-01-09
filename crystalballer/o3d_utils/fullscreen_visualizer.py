@@ -22,3 +22,7 @@ class FullScreenVisualizer:
 
         if key == ord("q"):
             raise KeyboardInterrupt()
+
+    def close(self) -> None:
+        """Close the window"""
+        cv2.destroyWindow(self.window_name)
