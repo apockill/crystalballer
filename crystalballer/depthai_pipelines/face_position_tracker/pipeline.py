@@ -54,7 +54,7 @@ class FacePositionPipeline:
 
         self.pipeline.setOpenVINOVersion(version=dai.OpenVINO.Version.VERSION_2021_4)
 
-        self.device = Device(self.pipeline.getOpenVINOVersion())
+        self.device = Device(self.pipeline.getOpenVINOVersion(), usb2Mode=True)
 
     def __enter__(self) -> "FacePositionPipeline":
         """Open up the device and start outputting results to the queues"""
