@@ -6,5 +6,5 @@ extends ColorRect
 
 func _process(delta):
 	var shadermat = material as ShaderMaterial
-	shadermat.set_shader_parameter("gakken_dir", gakken.basis.y)
-	shadermat.set_shader_parameter("camera_dir", -camera.basis.z)
+	shadermat.set_shader_parameter("camera_up", camera.basis.y)
+	shadermat.set_shader_parameter("camera_right", camera.basis.x)

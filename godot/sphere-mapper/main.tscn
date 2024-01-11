@@ -36,14 +36,14 @@ uv1_scale = Vector3(8, 8, 8)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
 shader = ExtResource("5_dtrw5")
-shader_parameter/gakken_dir = Vector3(0, 1, 0)
-shader_parameter/camera_dir = Vector3(0, -1, 0)
+shader_parameter/camera_up = Vector3(0, 1, 0)
+shader_parameter/camera_right = Vector3(1, 0, 0)
 
 [node name="Node3D" type="Node3D"]
 
 [node name="MainCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
-transform = Transform3D(0.949782, -0.157204, 0.270558, 0, 0.864642, 0.502388, -0.312913, -0.477159, 0.821222, 0.51, 0.947, 1.548)
-fov = 29.7115
+transform = Transform3D(1, 0, 0, 0, 0.894427, 0.447214, 0, -0.447214, 0.894427, 0, 1, 2)
+fov = 25.2088
 near = 0.01
 script = ExtResource("3_xfpkw")
 camera_target = NodePath("../Gakken")
