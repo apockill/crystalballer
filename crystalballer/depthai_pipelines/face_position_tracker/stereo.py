@@ -1,4 +1,5 @@
 import math
+from typing import cast
 
 import depthai as dai
 import numpy as np
@@ -30,14 +31,17 @@ class StereoInference:
         # Our coords are normalized for 300x300 image. 300x300 was downscaled from
         # 720x720 (by ImageManip), so we need to multiple coords by 2.4 to get the
         # correct disparity.
-        self.resize_factor = self.original_height / self.mono_height
+        # TODO: This should be self.original_height / self.mono_height, but for some
+        #       reason tweaking this to 400 makes the distance pretty bang on accurate
+        #       Must fix!
+        self.resize_factor = 400 / self.mono_height  # This is way more accurate
 
     def get_focal_length_pixels(self, pixel_width: float, hfov: float) -> float:
         return pixel_width * 0.5 / math.tan(hfov * 0.5 * math.pi / 180)
 
     def calculate_depth(self, disparity_pixels: float) -> float:
         try:
-            return self.disp_scale_factor / disparity_pixels
+            return cast(float, self.disp_scale_factor / disparity_pixels)
         except ZeroDivisionError:
             print("Warning: Zero division error!")
             return 0.0  # Or inf?

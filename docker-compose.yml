@@ -3,7 +3,7 @@ services:
     image: crystalballer
     volumes:
       # Give access to the camera USB device and maybe other hardware
-      - "/dev:/dev"
+      - "/dev/bus/usb:/dev/bus/usb"
       # Necessary for display passthrough
       - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       # Audio passthrough

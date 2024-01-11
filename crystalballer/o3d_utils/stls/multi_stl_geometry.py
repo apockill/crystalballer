@@ -1,8 +1,6 @@
-from functools import cached_property
 from pathlib import Path
 
 import numpy as np
-import numpy.typing as npt
 import open3d as o3d
 
 
@@ -17,8 +15,8 @@ class MultiSTLGeometry:
         self._largest_side_length = largest_side_length
 
         # Keep track of an internal 'transform' to apply to all meshes
-        self._current_transform = np.eye(4)
-        self._current_transform[:3, 3] = offset
+        self._default_transform = np.eye(4)
+        self._default_transform[:3, 3] = offset
 
     def create_mesh(self) -> o3d.geometry.TriangleMesh:
         meshes = [
@@ -32,7 +30,7 @@ class MultiSTLGeometry:
         final_mesh.translate(-final_mesh.get_center())
 
         # Apply the transform
-        final_mesh.transform(self._current_transform)
+        final_mesh.transform(self._default_transform)
 
         # Normalize the mesh so the largest axis-aligned side is _largest_side_length
         bounding_box: o3d.geometry.AxisAlignedBoundingBox = (
@@ -44,7 +42,3 @@ class MultiSTLGeometry:
         )
 
         return final_mesh
-
-    def transform(self, transform: npt.NDArray[np.float64]) -> None:
-        self._current_transform = transform @ self._current_transform
-        self.create_mesh.transform(transform)

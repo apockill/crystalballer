@@ -48,24 +48,28 @@ class FacePositionPipeline:
     """The size of the crop of the full mono image before image manip"""
 
     # TODO: One possible optimization is to stop creating unecessary streams that go to the host
-    def __init__(self) -> None:
+    def __init__(self, loglevel: dai.LogLevel = dai.LogLevel.WARN) -> None:
+        self.loglevel = loglevel
         self.pipeline = self._create_pipeline()
+
         self.pipeline.setOpenVINOVersion(version=dai.OpenVINO.Version.VERSION_2021_4)
 
-        self.device = Device(self.pipeline.getOpenVINOVersion())
+        self.device = Device(self.pipeline.getOpenVINOVersion(), usb2Mode=True)
 
     def __enter__(self) -> "FacePositionPipeline":
         """Open up the device and start outputting results to the queues"""
         self.device.__enter__()
         self.device.startPipeline(self.pipeline)
-
-        self.device.setLogLevel(dai.LogLevel.INFO)
-        self.device.setLogOutputLevel(dai.LogLevel.INFO)
+        self.device.setLogLevel(self.loglevel)
+        self.device.setLogOutputLevel(self.loglevel)
         return self
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
+
+    def close(self) -> None:
+        self.device.close()
 
     def get_latest_face(self) -> Optional[FaceDetection]:
         """The latest face detections from the NN
@@ -77,8 +81,8 @@ class FacePositionPipeline:
         # regardless of whether we want to pack frames into the FaceDetection, we need
         # to drain the queues.
         # These should be 300x300 mono images
-        left_image = self.left_frame_queue.get().getCvFrame()  # type: ignore
-        right_image = self.right_frame_queue.get().getCvFrame()  # type: ignore
+        left_image = self.left_frame_queue.get().getCvFrame()
+        right_image = self.right_frame_queue.get().getCvFrame()
 
         assert left_image.shape == (*self.MONO_CROP_SIZE, 3), f"{left_image.shape=}"
         assert right_image.shape == (*self.MONO_CROP_SIZE, 3), f"{right_image.shape=}"
@@ -86,13 +90,13 @@ class FacePositionPipeline:
         left_config = self.left_config_queue.tryGet()
         if left_config is not None:
             left_landmarks_nn_layer = (
-                self.left_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
+                self.left_landmarks_queue.get().getFirstLayerFp16()
             )
 
         right_config = self.right_config_queue.tryGet()
         if right_config is not None:
             right_landmarks_nn_layer = (
-                self.right_landmarks_queue.get().getFirstLayerFp16()  # type: ignore
+                self.right_landmarks_queue.get().getFirstLayerFp16()
             )
 
         # TODO: This is a very hacky way of draining all the queues
@@ -107,8 +111,8 @@ class FacePositionPipeline:
         return calculate_face_detection_from_landmarks(
             left_landmarks=np.array(left_landmarks_nn_layer).reshape(5, 2),
             right_landmarks=np.array(right_landmarks_nn_layer).reshape(5, 2),
-            left_manip_config=left_config,  # type: ignore
-            right_manip_config=right_config,  # type: ignore
+            left_manip_config=left_config,
+            right_manip_config=right_config,
             stereo=self.stereo_inference,
             left_frame=left_image,
             right_frame=right_image,

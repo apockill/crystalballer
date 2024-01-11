@@ -55,7 +55,7 @@ class VirtualCameraRenderer:
         self._o3d_renderer.setup_camera(self._o3d_intrinsics, transform)
         self._o3d_renderer.scene.camera.set_projection(
             self._o3d_intrinsics.intrinsic_matrix,
-            0.01,
+            0.001,
             10000.0,
             self._width,
             self._height,
