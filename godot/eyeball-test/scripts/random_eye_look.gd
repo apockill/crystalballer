@@ -4,13 +4,15 @@ extends MeshInstance3D
 @export var look_interval_max = 2
 @export var look_speed = 0.1
 
-var look_timer = 0;
-var look_progress = 1;
-var last_look = Vector3(0, 0, 0);
-var current_look = Vector3(0, 0, 0);
+var look_timer = 0
+var look_progress = 1
+var last_look = Vector3(0, 0, 0)
+var current_look = Vector3(0, 0, 0)
+
 
 func _ready():
 	look_timer = randf_range(look_interval_min, look_interval_max)
+
 
 func _process(delta):
 	if look_timer > 0:

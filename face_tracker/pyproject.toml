@@ -11,6 +11,7 @@ python = "^3.9"
 blobconverter = "1.4.2"
 open3d = "0.16.0"
 scipy = "^1.11.4"
+gdtoolkit = "==4.*"
 
 [tool.poetry.dev-dependencies]
 vulture = "^2.10"
