@@ -1,7 +1,7 @@
 import cv2
 
-from crystalballer import drawing
-from crystalballer.depthai_pipelines import FacePositionPipeline
+from face_tracker.crystalballer import drawing
+from face_tracker.crystalballer.depthai_pipelines import FacePositionPipeline
 
 
 def main() -> None:

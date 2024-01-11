@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euxo pipefail
 
+
+# Run face_tracker specific linting
+cd face_tracker
 poetry run cruft check
 poetry run mypy --ignore-missing-imports crystalballer/ tests/
 poetry run isort --check --diff crystalballer/ tests/

@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import open3d as o3d
 
-from crystalballer.depthai_pipelines import FacePositionPipeline
-from crystalballer.o3d_utils import VirtualCameraRenderer
+from face_tracker.crystalballer.depthai_pipelines import FacePositionPipeline
+from face_tracker.crystalballer.o3d_utils import VirtualCameraRenderer
 
 
 def main() -> None:

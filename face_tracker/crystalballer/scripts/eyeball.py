@@ -3,11 +3,13 @@ from copy import copy
 import numpy as np
 import open3d as o3d
 
-from crystalballer import constants, linalg
-from crystalballer.depthai_pipelines import FacePositionPipeline
-from crystalballer.o3d_utils import VirtualCameraRenderer, Visualizer
-from crystalballer.o3d_utils.fullscreen_visualizer import FullScreenVisualizer
-from crystalballer.resources import GLOBE
+from face_tracker.crystalballer import constants, linalg
+from face_tracker.crystalballer.depthai_pipelines import FacePositionPipeline
+from face_tracker.crystalballer.o3d_utils import VirtualCameraRenderer, Visualizer
+from face_tracker.crystalballer.o3d_utils.fullscreen_visualizer import (
+    FullScreenVisualizer,
+)
+from face_tracker.crystalballer.resources import GLOBE
 
 PROJECTOR_DISTANCE = constants.GAKKEN_RADIUS * 1.666
 """Distance from the projector to the center of the globe in meters, with the default
