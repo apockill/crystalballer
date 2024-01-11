@@ -21,13 +21,4 @@ services:
       # As documented in https://docs.luxonis.com/projects/api/en/latest/install/#docker
       - 'c 189:* rmw'
     build:
-      context: .
-
-    # Allow GPU access (let's open3d render)
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+      context: ./face_tracker

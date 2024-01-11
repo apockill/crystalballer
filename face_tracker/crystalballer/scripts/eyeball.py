@@ -3,13 +3,11 @@ from copy import copy
 import numpy as np
 import open3d as o3d
 
-from face_tracker.crystalballer import constants, linalg
-from face_tracker.crystalballer.depthai_pipelines import FacePositionPipeline
-from face_tracker.crystalballer.o3d_utils import VirtualCameraRenderer, Visualizer
-from face_tracker.crystalballer.o3d_utils.fullscreen_visualizer import (
-    FullScreenVisualizer,
-)
-from face_tracker.crystalballer.resources import GLOBE
+from crystalballer import constants, linalg
+from crystalballer.depthai_pipelines import FacePositionPipeline
+from crystalballer.o3d_utils import VirtualCameraRenderer
+from crystalballer.o3d_utils.fullscreen_visualizer import FullScreenVisualizer
+from crystalballer.resources import GLOBE
 
 PROJECTOR_DISTANCE = constants.GAKKEN_RADIUS * 1.666
 """Distance from the projector to the center of the globe in meters, with the default
@@ -23,13 +21,11 @@ def main() -> None:
     face_pipeline = FacePositionPipeline()
     cv2_visualizer = FullScreenVisualizer("Gakken View")
     renderer = VirtualCameraRenderer(intrinsics=constants.GAKKEN_INTRINSICS)
-    o3d_visualizer = Visualizer()
 
     try:
         run_rendering_loop(
             renderer=renderer,
             cv2_visualizer=cv2_visualizer,
-            o3d_visualizer=o3d_visualizer,
             face_pipeline=face_pipeline,
         )
     except Exception as e:
@@ -38,21 +34,13 @@ def main() -> None:
         del renderer
         face_pipeline.close()
         cv2_visualizer.close()
-        o3d_visualizer.close()
 
 
 def run_rendering_loop(
     renderer: VirtualCameraRenderer,
     cv2_visualizer: FullScreenVisualizer,
-    o3d_visualizer: Visualizer,
     face_pipeline: FacePositionPipeline,
 ) -> None:
-    o3d_visualizer.set_camera(
-        eye=(0, 0, 0),
-        center=(0, 0, -PROJECTOR_DISTANCE),
-        up=(0, -1, 0),
-    )
-
     # Create geometries for the scene
     eyeball = GLOBE.create_mesh()
     geometries = [
@@ -80,5 +68,3 @@ def run_rendering_loop(
             render_geometries = [*geometries, oriented_eyeball]
             color_rgb, depth = renderer.render(camera_position, render_geometries)
             cv2_visualizer.show(color_rgb)
-
-            o3d_visualizer.draw(render_geometries)

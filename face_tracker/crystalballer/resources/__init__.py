@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from face_tracker.crystalballer.o3d_utils.stls import GlobeGeometry
+from crystalballer.o3d_utils.stls import GlobeGeometry
 
 
 def resource_path(path: Union[Path, str]) -> Path:

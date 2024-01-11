@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from face_tracker.crystalballer.depthai_pipelines import FaceDetection
+from crystalballer.depthai_pipelines import FaceDetection
 
 from .text import draw_text
 

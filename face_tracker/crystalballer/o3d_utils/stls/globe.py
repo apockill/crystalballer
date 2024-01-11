@@ -2,7 +2,7 @@ from pathlib import Path
 
 import open3d as o3d
 
-from face_tracker.crystalballer.constants import GAKKEN_DIAMETER
+from crystalballer.constants import GAKKEN_DIAMETER
 
 from .multi_stl_geometry import MultiSTLGeometry
 

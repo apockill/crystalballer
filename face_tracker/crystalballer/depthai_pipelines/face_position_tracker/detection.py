@@ -4,9 +4,7 @@ from typing import cast
 import numpy as np
 import numpy.typing as npt
 
-from face_tracker.crystalballer.depthai_pipelines.face_position_tracker.stereo import (
-    StereoInference,
-)
+from crystalballer.depthai_pipelines.face_position_tracker.stereo import StereoInference
 
 POINT = tuple[float, float, float]
 
