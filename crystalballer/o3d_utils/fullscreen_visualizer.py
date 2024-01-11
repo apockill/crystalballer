@@ -20,8 +20,9 @@ class FullScreenVisualizer:
         )
         key = cv2.waitKey(1)
 
-        if key == ord("q"):
-            raise KeyboardInterrupt()
+        # Check if Esc or Q was pressed
+        if key in [27, ord("q")]:
+            raise KeyboardInterrupt("User pressed Esc or Q")
 
     def close(self) -> None:
         """Close the window"""
