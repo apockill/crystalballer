@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cvvf77y7rsjt"]
+[gd_scene load_steps=17 format=3 uid="uid://cvvf77y7rsjt"]
 
 [ext_resource type="Texture2D" uid="uid://sn6hctqugmtb" path="res://images/placeholder_orange.png" id="1_mjd6b"]
 [ext_resource type="ArrayMesh" uid="uid://bygg1lnd1p6ce" path="res://models/suzanne.obj" id="2_8bygs"]
@@ -7,6 +7,7 @@
 [ext_resource type="ArrayMesh" uid="uid://bjkmwmtgdcd0i" path="res://models/gakken.obj" id="4_i5wfv"]
 [ext_resource type="Shader" path="res://shaders/gakken_project.gdshader" id="5_dtrw5"]
 [ext_resource type="Script" path="res://scripts/sphere_mapper.gd" id="7_ea0fo"]
+[ext_resource type="Script" path="res://scripts/window_manager.gd" id="8_gfar0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y7ir6"]
 
@@ -38,6 +39,7 @@ uv1_scale = Vector3(8, 8, 8)
 shader = ExtResource("5_dtrw5")
 shader_parameter/camera_up = Vector3(0, 1, 0)
 shader_parameter/camera_right = Vector3(1, 0, 0)
+shader_parameter/projection_distance = 1.6666
 
 [node name="Node3D" type="Node3D"]
 
@@ -91,3 +93,6 @@ grow_vertical = 2
 script = ExtResource("7_ea0fo")
 gakken = NodePath("../../Gakken")
 camera = NodePath("../../MainCamera")
+
+[node name="WindowManager" type="Node" parent="."]
+script = ExtResource("8_gfar0")
