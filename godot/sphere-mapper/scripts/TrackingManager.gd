@@ -6,7 +6,7 @@ extends Node
 var relative_pos: Vector3
 
 func _ready():
-	relative_pos = gakken.position - camera.position
+	relative_pos = camera.position - gakken.position;
 	# TODO: Init necessary camera tracking server/hardware
 
 func _process(delta):
