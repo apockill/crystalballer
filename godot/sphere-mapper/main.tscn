@@ -37,9 +37,9 @@ uv1_scale = Vector3(8, 8, 8)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
 shader = ExtResource("5_dtrw5")
-shader_parameter/camera_up = Vector3(0, 1, 0)
-shader_parameter/camera_right = Vector3(1, 0, 0)
-shader_parameter/projection_distance = 1.6666
+shader_parameter/mvp_matrix = Projection(2.55897, 0, 0, 0, 0, 4, -0.447216, -0.447214, 0, -2, -0.894432, -0.894427, 0, 0, 2.21608, 2.23607)
+shader_parameter/gakken_radius = 0.5
+shader_parameter/distance_ratio = 1.6666
 
 [node name="Node3D" type="Node3D"]
 
