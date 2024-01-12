@@ -15,7 +15,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
 shader = ExtResource("5_dtrw5")
-shader_parameter/mvp_matrix = Projection(4.26953, 0, 0, 0, 0, 6.1433, -0.530002, -0.529999, 0, -3.83956, -0.848003, -0.847998, 0, -1.83085e-07, 0.923403, 0.943398)
+shader_parameter/mvp_matrix = Projection(3.63587, 0, 0, 0, 0, 5.35644, -0.496141, -0.496139, 0, -3.06083, -0.868247, -0.868243, 0, 0, 0.78623, 0.806226)
 shader_parameter/gakken_radius = 0.129
 shader_parameter/distance_ratio = 1.6666
 
@@ -53,8 +53,8 @@ albedo_texture = SubResource("NoiseTexture2D_6erwc")
 [node name="Node3D" type="Node3D"]
 
 [node name="MainCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
-transform = Transform3D(1, 0, 0, 0, 0.847998, 0.529999, 0, -0.529999, 0.847998, 0, 0.5, 0.8)
-fov = 15.7185
+transform = Transform3D(1, 0, 0, 0, 0.868243, 0.496139, 0, -0.496139, 0.868243, 0, 0.4, 0.7)
+fov = 18.4144
 near = 0.01
 script = ExtResource("3_xfpkw")
 camera_target = NodePath("../Gakken")
