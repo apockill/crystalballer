@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cvvf77y7rsjt"]
+[gd_scene load_steps=21 format=3 uid="uid://cvvf77y7rsjt"]
 
 [ext_resource type="Texture2D" uid="uid://sn6hctqugmtb" path="res://images/placeholder_orange.png" id="1_mjd6b"]
 [ext_resource type="ArrayMesh" uid="uid://bygg1lnd1p6ce" path="res://models/suzanne.obj" id="2_8bygs"]
@@ -9,8 +9,15 @@
 [ext_resource type="ArrayMesh" uid="uid://cw5wtu6surcak" path="res://models/dome_platform.obj" id="5_updc5"]
 [ext_resource type="Script" path="res://scripts/SphereMapper.gd" id="7_ea0fo"]
 [ext_resource type="Script" path="res://scripts/WindowManager.gd" id="8_gfar0"]
+[ext_resource type="Script" path="res://scripts/TrackingManager.gd" id="10_nmnyv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y7ir6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
+shader = ExtResource("5_dtrw5")
+shader_parameter/mvp_matrix = Projection(1.34923, 0, 0, 0, 0, 1.84126, -0.624698, -0.624695, 0, -1.47301, -0.780873, -0.780869, 0, 1.40546e-07, 1.26063, 1.28062)
+shader_parameter/gakken_radius = 0.5
+shader_parameter/distance_ratio = 1.6666
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_mm104"]
 energy_multiplier = 3.0
@@ -43,20 +50,7 @@ shading_mode = 0
 albedo_color = Color(0.176471, 0.176471, 0.176471, 1)
 albedo_texture = SubResource("NoiseTexture2D_6erwc")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
-shader = ExtResource("5_dtrw5")
-shader_parameter/mvp_matrix = Projection(1.34923, 0, 0, 0, 0, 1.84126, -0.624698, -0.624695, 0, -1.47301, -0.780873, -0.780869, 0, 1.40546e-07, 1.26063, 1.28062)
-shader_parameter/gakken_radius = 0.5
-shader_parameter/distance_ratio = 1.6666
-
 [node name="Node3D" type="Node3D"]
-
-[node name="MainCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
-transform = Transform3D(1, 0, 0, 0, 0.780869, 0.624695, 0, -0.624695, 0.780869, 0, 0.8, 1)
-fov = 45.9631
-near = 0.01
-script = ExtResource("3_xfpkw")
-camera_target = NodePath("../Gakken")
 
 [node name="Gakken" type="Node3D" parent="."]
 
@@ -66,6 +60,26 @@ material_override = SubResource("StandardMaterial3D_y7ir6")
 transparency = 0.8
 cast_shadow = 0
 mesh = ExtResource("4_i5wfv")
+
+[node name="MainCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
+transform = Transform3D(1, 0, 0, 0, 0.780869, 0.624695, 0, -0.624695, 0.780869, 0, 0.8, 1)
+fov = 45.9631
+near = 0.01
+script = ExtResource("3_xfpkw")
+camera_target = NodePath("../Gakken")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SphereMapper" type="ColorRect" parent="CanvasLayer" node_paths=PackedStringArray("gakken", "camera")]
+material = SubResource("ShaderMaterial_1kxbj")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("7_ea0fo")
+gakken = NodePath("../../Gakken")
+camera = NodePath("../../MainCamera")
 
 [node name="Environment" type="Node" parent="."]
 
@@ -90,18 +104,10 @@ mesh = ExtResource("5_updc5")
 surface_material_override/0 = SubResource("StandardMaterial3D_d377l")
 surface_material_override/1 = SubResource("StandardMaterial3D_nt32k")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="SphereMapper" type="ColorRect" parent="CanvasLayer" node_paths=PackedStringArray("gakken", "camera")]
-material = SubResource("ShaderMaterial_1kxbj")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("7_ea0fo")
-gakken = NodePath("../../Gakken")
-camera = NodePath("../../MainCamera")
-
 [node name="WindowManager" type="Node" parent="."]
 script = ExtResource("8_gfar0")
+
+[node name="TrackingManager" type="Node" parent="." node_paths=PackedStringArray("gakken", "camera")]
+script = ExtResource("10_nmnyv")
+gakken = NodePath("../Gakken")
+camera = NodePath("../MainCamera")
