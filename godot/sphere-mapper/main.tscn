@@ -1,13 +1,14 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvvf77y7rsjt"]
+[gd_scene load_steps=20 format=3 uid="uid://cvvf77y7rsjt"]
 
 [ext_resource type="Texture2D" uid="uid://sn6hctqugmtb" path="res://images/placeholder_orange.png" id="1_mjd6b"]
 [ext_resource type="ArrayMesh" uid="uid://bygg1lnd1p6ce" path="res://models/suzanne.obj" id="2_8bygs"]
-[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="3_xfpkw"]
-[ext_resource type="Script" path="res://scripts/rotate.gd" id="4_gg1pf"]
+[ext_resource type="Script" path="res://scripts/CameraController.gd" id="3_xfpkw"]
+[ext_resource type="Script" path="res://scripts/ObjectRotater.gd" id="4_gg1pf"]
 [ext_resource type="ArrayMesh" uid="uid://bjkmwmtgdcd0i" path="res://models/gakken.obj" id="4_i5wfv"]
 [ext_resource type="Shader" path="res://shaders/gakken_project.gdshader" id="5_dtrw5"]
-[ext_resource type="Script" path="res://scripts/sphere_mapper.gd" id="7_ea0fo"]
-[ext_resource type="Script" path="res://scripts/window_manager.gd" id="8_gfar0"]
+[ext_resource type="ArrayMesh" uid="uid://cw5wtu6surcak" path="res://models/dome_platform.obj" id="5_updc5"]
+[ext_resource type="Script" path="res://scripts/SphereMapper.gd" id="7_ea0fo"]
+[ext_resource type="Script" path="res://scripts/WindowManager.gd" id="8_gfar0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y7ir6"]
 
@@ -29,23 +30,30 @@ ssil_enabled = true
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_bs6be"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g45u1"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d377l"]
 albedo_texture = ExtResource("1_mjd6b")
-uv1_scale = Vector3(8, 8, 8)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_2cow7"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_87bsu"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6erwc"]
+noise = SubResource("FastNoiseLite_87bsu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nt32k"]
+shading_mode = 0
+albedo_color = Color(0.176471, 0.176471, 0.176471, 1)
+albedo_texture = SubResource("NoiseTexture2D_6erwc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
 shader = ExtResource("5_dtrw5")
-shader_parameter/mvp_matrix = Projection(2.55897, 0, 0, 0, 0, 4, -0.447216, -0.447214, 0, -2, -0.894432, -0.894427, 0, 0, 2.21608, 2.23607)
+shader_parameter/mvp_matrix = Projection(1.34923, 0, 0, 0, 0, 1.84126, -0.624698, -0.624695, 0, -1.47301, -0.780873, -0.780869, 0, 1.40546e-07, 1.26063, 1.28062)
 shader_parameter/gakken_radius = 0.5
 shader_parameter/distance_ratio = 1.6666
 
 [node name="Node3D" type="Node3D"]
 
 [node name="MainCamera" type="Camera3D" parent="." node_paths=PackedStringArray("camera_target")]
-transform = Transform3D(1, 0, 0, 0, 0.894427, 0.447214, 0, -0.447214, 0.894427, 0, 1, 2)
-fov = 25.2088
+transform = Transform3D(1, 0, 0, 0, 0.780869, 0.624695, 0, -0.624695, 0.780869, 0, 0.8, 1)
+fov = 45.9631
 near = 0.01
 script = ExtResource("3_xfpkw")
 camera_target = NodePath("../Gakken")
@@ -69,17 +77,18 @@ camera_attributes = SubResource("CameraAttributesPractical_bs6be")
 transform = Transform3D(0.747902, -0.538256, 0.388488, 0, 0.585241, 0.81086, -0.663809, -0.606444, 0.437703, -0.033228, 1.35226, 0.0952516)
 shadow_enabled = true
 
-[node name="Plane" type="MeshInstance3D" parent="Environment"]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
-material_override = SubResource("StandardMaterial3D_g45u1")
-mesh = SubResource("PlaneMesh_2cow7")
-skeleton = NodePath("../..")
-
 [node name="Suzanne" type="MeshInstance3D" parent="Environment"]
 transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
 mesh = ExtResource("2_8bygs")
 skeleton = NodePath("../..")
 script = ExtResource("4_gg1pf")
+
+[node name="DomePlatform" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(0.505, 0, 0, 0, 0.505, 0, 0, 0, 0.505, 0, 0, 0)
+cast_shadow = 0
+mesh = ExtResource("5_updc5")
+surface_material_override/0 = SubResource("StandardMaterial3D_d377l")
+surface_material_override/1 = SubResource("StandardMaterial3D_nt32k")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
