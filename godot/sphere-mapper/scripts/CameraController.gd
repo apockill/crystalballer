@@ -2,7 +2,7 @@
 extends Camera3D
 
 @export var camera_target: Node3D
-@export var gakken_radius: float = 0.5;
+@export var gakken_radius: float = 0.5
 
 func _process(_delta):
 	look_at(camera_target.global_position)

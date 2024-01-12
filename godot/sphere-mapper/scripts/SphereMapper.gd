@@ -6,9 +6,9 @@ extends ColorRect
 
 
 func _process(_delta):
-	var mvp_matrix = camera.get_camera_projection();
-	mvp_matrix *= Projection(camera.get_camera_transform()).inverse();
-	mvp_matrix *= Projection(gakken.transform);
+	var mvp_matrix = camera.get_camera_projection()
+	mvp_matrix *= Projection(camera.get_camera_transform()).inverse()
+	mvp_matrix *= Projection(gakken.transform)
 	
 	# set shader mvp_matrix
 	var shadermat = material as ShaderMaterial
