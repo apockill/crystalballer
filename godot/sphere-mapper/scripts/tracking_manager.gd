@@ -5,43 +5,46 @@ extends Node
 var websocket = WebSocketPeer.new()
 var face_url = "ws://localhost:6942/faces"
 
+
 class FaceLocationPacket:
 	var location: Vector3
-	
+
 	func _init(face_data: Dictionary):
 		location = Vector3(
-			face_data["location"][0],
-			face_data["location"][1],
-			face_data["location"][2]
+			face_data["location"][0], face_data["location"][1], face_data["location"][2]
 		)
+
 
 class FaceUpdatePacket:
 	var face_locations: Array[FaceLocationPacket]
-	
+
 	func _init(json_data: Dictionary):
 		face_locations = []
 		for face_data in json_data["face_locations"]:
 			face_locations.append(FaceLocationPacket.new(face_data))
 
+
 func _ready():
 	websocket.connect_to_url(face_url)
 
+
 func _process(_delta):
 	var faces = _poll_for_faces()
-	
+
 	# If no new faces came in, there's nothing to do
 	if faces == null or len(faces.face_locations) == 0:
 		return
-	
+
 	var face_location = faces.face_locations[0].location
 	camera.set_position(face_location)
 	print("Got faces %s" % [face_location])
+
 
 func _poll_for_faces() -> FaceUpdatePacket:
 	# Poll the websocket and return a face packet if any were found
 	websocket.poll()
 	var state = websocket.get_ready_state()
-	
+
 	if state == WebSocketPeer.STATE_OPEN:
 		while websocket.get_available_packet_count():
 			var raw_packet_data = websocket.get_packet().get_string_from_utf8()
@@ -49,7 +52,7 @@ func _poll_for_faces() -> FaceUpdatePacket:
 			return FaceUpdatePacket.new(packet_data)
 
 	elif state == WebSocketPeer.STATE_CONNECTING:
-		print("Websocket is connecting!")		
+		print("Websocket is connecting!")
 	elif state == WebSocketPeer.STATE_CLOSING:
 		# Keep polling to achieve proper close.
 		print("Websocket is closing!")
@@ -62,9 +65,8 @@ func _poll_for_faces() -> FaceUpdatePacket:
 
 	return null
 
+
 func parse_json(data) -> Dictionary:
 	var face_data = JSON.new()
 	face_data.parse(data)
 	return face_data.data
-
-
