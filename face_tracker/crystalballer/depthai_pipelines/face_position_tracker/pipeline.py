@@ -38,6 +38,7 @@ FACE_DETECTION_MODEL = "face-detection-retail-0004"
 LANDMARKS_MODEL = "landmarks-regression-retail-0009"
 OPENVINO_VERSION = "2021.4"
 CAMERA_RESOLUTION = dai.MonoCameraProperties.SensorResolution.THE_480_P
+MAX_QUEUE_SIZE = 4
 
 
 class FacePositionPipeline:
@@ -130,32 +131,44 @@ class FacePositionPipeline:
     @cached_property
     def left_frame_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("mono_left", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "mono_left", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def right_frame_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("mono_right", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "mono_right", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def left_landmarks_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("landmarks_left", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "landmarks_left", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def right_landmarks_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("landmarks_right", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "landmarks_right", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def left_crop_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("crop_left", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "crop_left", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def right_crop_queue(self) -> dai.DataOutputQueue:
         """The queue that will contain the frames from the left camera"""
-        return self.device.getOutputQueue("crop_right", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "crop_right", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     @cached_property
     def left_config_queue(self) -> dai.DataOutputQueue:
@@ -163,7 +176,9 @@ class FacePositionPipeline:
 
     @cached_property
     def right_config_queue(self) -> dai.DataOutputQueue:
-        return self.device.getOutputQueue("config_right", maxSize=4, blocking=False)
+        return self.device.getOutputQueue(
+            "config_right", maxSize=MAX_QUEUE_SIZE, blocking=False
+        )
 
     def _create_pipeline(self) -> Pipeline:
         pipeline = dai.Pipeline()
