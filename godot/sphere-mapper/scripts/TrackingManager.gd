@@ -1,6 +1,5 @@
 extends Node
 
-@export var gakken: Node3D
 @export var camera: Node3D
 
 var websocket = WebSocketPeer.new()
@@ -31,10 +30,12 @@ func _process(_delta):
 	var faces = _poll_for_faces()
 	
 	# If no new faces came in, there's nothing to do
-	if faces == null:
+	if faces == null or len(faces.face_locations) == 0:
 		return
-
-	print("Got faces %s" % [faces.face_locations])
+	
+	var face_location = faces.face_locations[0].location
+	camera.set_position(face_location)
+	print("Got faces %s" % [face_location])
 
 func _poll_for_faces() -> FaceUpdatePacket:
 	# Poll the websocket and return a face packet if any were found
