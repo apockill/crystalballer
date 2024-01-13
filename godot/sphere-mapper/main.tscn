@@ -1,24 +1,27 @@
-[gd_scene load_steps=22 format=3 uid="uid://cvvf77y7rsjt"]
+[gd_scene load_steps=24 format=3 uid="uid://cvvf77y7rsjt"]
 
 [ext_resource type="Texture2D" uid="uid://sn6hctqugmtb" path="res://images/placeholder_orange.png" id="1_mjd6b"]
 [ext_resource type="ArrayMesh" uid="uid://bygg1lnd1p6ce" path="res://models/suzanne.obj" id="2_8bygs"]
-[ext_resource type="Script" path="res://scripts/CameraController.gd" id="3_xfpkw"]
-[ext_resource type="Script" path="res://scripts/ObjectRotater.gd" id="4_gg1pf"]
+[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="3_xfpkw"]
+[ext_resource type="Script" path="res://scripts/object_rotater.gd" id="4_gg1pf"]
 [ext_resource type="ArrayMesh" uid="uid://bjkmwmtgdcd0i" path="res://models/gakken.obj" id="4_i5wfv"]
 [ext_resource type="Shader" path="res://shaders/gakken_project.gdshader" id="5_dtrw5"]
 [ext_resource type="ArrayMesh" uid="uid://cw5wtu6surcak" path="res://models/dome_platform.obj" id="5_updc5"]
-[ext_resource type="Script" path="res://scripts/SphereMapper.gd" id="7_ea0fo"]
-[ext_resource type="Script" path="res://scripts/WindowManager.gd" id="8_gfar0"]
-[ext_resource type="Script" path="res://scripts/TrackingManager.gd" id="10_nmnyv"]
+[ext_resource type="Script" path="res://scripts/sphere_mapper.gd" id="7_ea0fo"]
+[ext_resource type="Script" path="res://scripts/window_manager.gd" id="8_gfar0"]
+[ext_resource type="Script" path="res://scripts/tracking_manager.gd" id="10_nmnyv"]
+[ext_resource type="Script" path="res://scripts/helper_camera_controller.gd" id="11_3lmpw"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pmsft"]
 size = Vector3(0.09, 0.028, 0.01)
+
+[sub_resource type="PrismMesh" id="PrismMesh_2qst6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y7ir6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1kxbj"]
 shader = ExtResource("5_dtrw5")
-shader_parameter/mvp_matrix = Projection(0.394523, -1.30839, -0.901926, -0.901921, 1.20164e-08, 3.29463, -0.37755, -0.377549, -1.69645, -0.304276, -0.20975, -0.209749, 3.58117e-16, 9.81876e-08, 0.456762, 0.47676)
+shader_parameter/mvp_matrix = Projection(0.805924, -1.30839, -0.901926, -0.901921, 2.45469e-08, 3.29463, -0.37755, -0.377549, -3.46548, -0.304276, -0.20975, -0.209749, 7.31555e-16, 9.81876e-08, 0.456762, 0.47676)
 shader_parameter/gakken_radius = 0.129
 shader_parameter/distance_ratio = 1.6666
 
@@ -57,6 +60,7 @@ albedo_texture = SubResource("NoiseTexture2D_6erwc")
 
 [node name="SensorMesh" type="MeshInstance3D" parent="." node_paths=PackedStringArray("camera")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -0.17)
+layers = 512
 mesh = SubResource("BoxMesh_pmsft")
 skeleton = NodePath("")
 script = ExtResource("10_nmnyv")
@@ -64,18 +68,26 @@ camera = NodePath("MainCamera")
 
 [node name="MainCamera" type="Camera3D" parent="SensorMesh" node_paths=PackedStringArray("camera_target")]
 transform = Transform3D(0.974008, 0.0855198, -0.209749, 0, 0.92599, 0.377549, 0.226514, -0.367735, 0.901922, -0.1, -0.24, 0.6)
+cull_mask = 1048063
 fov = 31.3971
 near = 0.01
 script = ExtResource("3_xfpkw")
 camera_target = NodePath("../../Gakken")
 gakken_radius = 0.129
 
+[node name="CameraMesh" type="MeshInstance3D" parent="SensorMesh/MainCamera"]
+transform = Transform3D(1.91069e-16, 4.37114e-09, 0.1, 0.1, -4.37114e-09, 0, 4.37114e-09, 0.1, -4.37114e-09, 0, 0, 0)
+layers = 512
+cast_shadow = 0
+mesh = SubResource("PrismMesh_2qst6")
+skeleton = NodePath("../../..")
+
 [node name="Gakken" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="GakkenMesh" type="MeshInstance3D" parent="Gakken"]
 transform = Transform3D(0.258, 0, 0, 0, 0.258, 0, 0, 0, 0.258, 0, 0, 0)
-visible = false
+layers = 512
 material_override = SubResource("StandardMaterial3D_y7ir6")
 transparency = 0.8
 cast_shadow = 0
@@ -121,3 +133,17 @@ surface_material_override/1 = SubResource("StandardMaterial3D_nt32k")
 script = ExtResource("8_gfar0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="Window" type="Window" parent="."]
+title = "Helper (DEBUG)"
+initial_position = 2
+size = Vector2i(1152, 648)
+
+[node name="CameraController" type="Node3D" parent="Window" node_paths=PackedStringArray("camera")]
+transform = Transform3D(0.861629, -0.31595, 0.397204, 0, 0.782608, 0.622515, -0.507538, -0.536377, 0.674318, 0, 0, 0)
+script = ExtResource("11_3lmpw")
+camera = NodePath("Camera3D")
+pan_speed = 0.2
+
+[node name="Camera3D" type="Camera3D" parent="Window/CameraController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
