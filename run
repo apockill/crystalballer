@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# Kill any existing networks and containers
+# Kill the existing stack
 docker compose down
-docker container stop $(docker container ls -aq) && docker container rm $(docker container ls -aq)
 
 # Allow X11 forwarding
 xhost +
