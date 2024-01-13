@@ -119,6 +119,11 @@ class FacePositionPipeline:
             right_frame=right_image,
         )
 
+    @property
+    def new_results_ready(self) -> bool:
+        """Whether there are new results ready to be read from the queues"""
+        return self.left_frame_queue.has() and self.right_frame_queue.has()
+
     @cached_property
     def stereo_inference(self) -> StereoInference:
         return StereoInference(

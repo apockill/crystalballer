@@ -1,28 +1,59 @@
+import asyncio
+
+import uvicorn
 from fastapi import FastAPI, WebSocket
 from pydantic import BaseModel
-import asyncio
-import uvicorn
 
-class DetectedFace(BaseModel):
+from crystalballer.depthai_pipelines import FaceDetection, FacePositionPipeline
+
+
+class FaceLocationPacket(BaseModel):
     location: tuple[float, float, float]
 
+
 class FaceUpdatePacket(BaseModel):
-    face_locations: list[DetectedFace]
+    face_locations: list[FaceLocationPacket]
 
-app = FastAPI()
 
-def get_faces():
-    # Dummy data for simulation
-    return [DetectedFace(location=(0.5, 0.5, 0.5))]
+def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
+    app = FastAPI()
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        faces = get_faces()
-        packet = FaceUpdatePacket(face_locations=faces)
-        await websocket.send_text(packet.json())
-        await asyncio.sleep(1)  # Send data every second
+    @app.websocket("/faces")
+    async def websocket_endpoint(websocket: WebSocket):
+        await websocket.accept()
 
-def main():
-    uvicorn.run(app, host="0.0.0.0", port=6942)
+        while True:
+            print("Waiting for face update")
+            # Get the latest face and package it into a packet
+            face = face_pipeline.get_latest_face()
+            print("Done")
+            faces = (
+                []
+                if face is None
+                # TODO: No longer use the centroid, but the nose+eyes
+                else [FaceLocationPacket(location=face.centroid.tolist())]
+            )
+            packet = FaceUpdatePacket(face_locations=faces)
+
+            await websocket.send_text(packet.json())
+            while not face_pipeline.new_results_ready:
+                await asyncio.sleep(0.01)
+
+    return app
+
+
+def main() -> None:
+    """This is the main entrypoint for the face socket server
+
+    It will start the face pipeline and then start the server on port 6942. It exposes
+    a websocket endpoint at /faces that will send face updates to any connected clients.
+
+    A quick way to test if it's working is to run the following in a terminal:
+        websocat ws://0.0.0.:6942/faces
+    """
+    face_pipeline = FacePositionPipeline()
+    app = create_api(face_pipeline)
+
+    # Start the face pipeline and server the app
+    with face_pipeline:
+        uvicorn.run(app, host="0.0.0.0", port=6942)
