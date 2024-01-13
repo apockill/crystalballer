@@ -30,7 +30,6 @@ def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
             faces = (
                 []
                 if face is None
-                # TODO: No longer use the centroid, but the nose+eyes
                 else [FaceLocationPacket(location=face.centroid.tolist())]
             )
             packet = FaceUpdatePacket(face_locations=faces)
