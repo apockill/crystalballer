@@ -23,10 +23,8 @@ def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
         await websocket.accept()
 
         while True:
-            print("Waiting for face update")
             # Get the latest face and package it into a packet
             face = face_pipeline.get_latest_face()
-            print("Done")
             faces = (
                 []
                 if face is None
