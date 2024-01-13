@@ -4,8 +4,6 @@ services:
     volumes:
       # Give access to the camera USB device and maybe other hardware
       - "/dev/bus/usb:/dev/bus/usb"
-      # Necessary for display passthrough
-      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       # Audio passthrough
       - "/run/user/${USER_ID:-1000}/pulse/native:/pulse-socket"
       - "~/.config/pulse/cookie:/root/.config/pulse/cookie:ro"
