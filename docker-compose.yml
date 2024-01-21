@@ -4,8 +4,6 @@ services:
     volumes:
       # Give access to the camera USB device and maybe other hardware
       - "/dev/bus/usb:/dev/bus/usb"
-      # Necessary for display passthrough
-      - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
       # Audio passthrough
       - "/run/user/${USER_ID:-1000}/pulse/native:/pulse-socket"
       - "~/.config/pulse/cookie:/root/.config/pulse/cookie:ro"
@@ -17,17 +15,11 @@ services:
       # Audio passthrough
       PULSE_SERVER: "unix:/pulse-socket"
     network_mode: "host"  #  Recommended by luxonis docs for POE cameras
+    privileged: true  # Not strictly required, but luxonis is not stable w/o this
+    ports:
+      - "6942:6942"  # For the face detection websocket
     device_cgroup_rules:
       # As documented in https://docs.luxonis.com/projects/api/en/latest/install/#docker
       - 'c 189:* rmw'
     build:
-      context: .
-
-    # Allow GPU access (let's open3d render)
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+      context: ./face_tracker

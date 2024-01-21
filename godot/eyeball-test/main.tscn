@@ -1,0 +1,34 @@
+[gd_scene load_steps=8 format=3 uid="uid://cdrprlva73571"]
+
+[ext_resource type="Script" path="res://scripts/camera_control.gd" id="1_qcuo5"]
+[ext_resource type="Shader" path="res://shaders/unlit.gdshader" id="2_hd1x0"]
+[ext_resource type="ArrayMesh" uid="uid://um0cvia0acam" path="res://models/eye.obj" id="3_i8dj8"]
+[ext_resource type="Script" path="res://scripts/random_eye_look.gd" id="5_re1ot"]
+[ext_resource type="Script" path="res://scripts/fullscreen_control.gd" id="6_f82oj"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_17rxr"]
+load_path = "res://.godot/imported/eye.jpg-578fd16898a744e4dd1c393577fba838.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a3e5c"]
+render_priority = 0
+shader = ExtResource("2_hd1x0")
+shader_parameter/mainTex = SubResource("CompressedTexture2D_17rxr")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.8335, 0)
+fov = 61.9174
+near = 0.8335
+script = ExtResource("1_qcuo5")
+distance_ratio = 1.667
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_a3e5c")
+cast_shadow = 0
+mesh = ExtResource("3_i8dj8")
+script = ExtResource("5_re1ot")
+
+[node name="FullscreenController" type="Node" parent="."]
+script = ExtResource("6_f82oj")

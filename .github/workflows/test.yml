@@ -38,6 +38,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
+          cd face_tracker
           poetry run pytest tests/ -s --cov=crystalballer/ --cov-report=term-missing ${@-}
           poetry run coverage xml
       - name: Report Coverage

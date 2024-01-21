@@ -15,6 +15,12 @@ _________________
 
 ## Running the Project
 
+The project is made up of two codebases: 
+1. The `face_tracker` codebase, which interacts with the Oak-D Lite to track faces, and
+   host a server to serve face tracking data.
+2. The `godot` codebase, which is a Godot project that uses the face tracking data to
+   make cool experiments for head tracking.
+
 ### Setting up the Software
 To run this project, simply have docker installed, and run the following command, where 
 you can replace COMMAND with the script you'd like to run in the docker environment:
