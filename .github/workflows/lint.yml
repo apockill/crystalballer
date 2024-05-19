@@ -36,4 +36,4 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}
 
       - name: Lint
-        run: .github/check_lint.sh
+        run: .github/check_lint
