@@ -1,4 +1,4 @@
-FROM luxonis/depthai-library:v2.24.0.0
+FROM luxonis/depthai-library:v2.25.0.0
 
 ARG POETRY_VERSION=1.7.0
 

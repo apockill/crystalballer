@@ -84,8 +84,6 @@ def landmark_to_pixels(
     """Convert a landmark from 0-1 range to pixel coordinates"""
     width = manip_config.getCropXMax() - manip_config.getCropXMin()
     height = manip_config.getCropYMax() - manip_config.getCropYMin()
-    # assert width == 640, f"width: {width}"
-    # assert height == 480, f"height: {height}"
 
     x = int(round((landmark[0] * width + manip_config.getCropXMin()) * crop_size[0]))
     y = int(round((landmark[1] * height + manip_config.getCropYMin()) * crop_size[1]))

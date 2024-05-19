@@ -1,4 +1,4 @@
-from typing import Union
+from __future__ import annotations
 
 import cv2
 import numpy as np
@@ -7,7 +7,7 @@ import numpy.typing as npt
 
 def draw_text(
     frame: npt.NDArray[np.uint8],
-    text: Union[str, list[str]],
+    text: str | list[str],
     coords: tuple[int, int],
     bg_color: tuple[int, int, int] = (0, 0, 0),
     color: tuple[int, int, int] = (255, 255, 255),

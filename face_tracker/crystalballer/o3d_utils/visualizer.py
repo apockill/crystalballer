@@ -1,11 +1,11 @@
-from typing import List, Optional, Union
+from __future__ import annotations
 
 import numpy as np
 import numpy.typing as npt
 import open3d as o3d
 from open3d.visualization import gui, rendering
 
-ARRAYABLE_POINT = Union[tuple[float, float, float], npt.NDArray[np.float64]]
+ARRAYABLE_POINT = tuple[float, float, float] | npt.NDArray[np.float64]
 
 
 class Visualizer:
@@ -25,7 +25,7 @@ class Visualizer:
 
         self.default_material = rendering.MaterialRecord()
 
-    def draw(self, geometries: Optional[List[o3d.geometry.Geometry]] = None) -> None:
+    def draw(self, geometries: list[o3d.geometry.Geometry] | None = None) -> None:
         if geometries is not None:
             self.scene.clear_geometry()
 

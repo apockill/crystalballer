@@ -1,3 +1,4 @@
+import logging
 import math
 from typing import cast
 
@@ -17,7 +18,7 @@ class StereoInference:
         baseline = calib_data.getBaselineDistance(useSpecTranslation=False) * 10  # mm
 
         # Original mono frames shape
-        # assert resolution == (640, 400)  # This was what the original used
+        # The original used (640x480)
         self.original_width, self.original_height = resolution
 
         self.hfov = calib_data.getFov(dai.CameraBoardSocket.RIGHT, useSpec=False)
@@ -43,7 +44,7 @@ class StereoInference:
         try:
             return cast(float, self.disp_scale_factor / disparity_pixels)
         except ZeroDivisionError:
-            print("Warning: Zero division error!")
+            logging.error("Warning: Zero division error!")
             return 0.0  # Or inf?
 
     def calculate_distance(self, c1: tuple[int, int], c2: tuple[int, int]) -> float:
