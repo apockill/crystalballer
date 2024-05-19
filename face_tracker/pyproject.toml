@@ -53,7 +53,7 @@ disallow_untyped_decorators = false
 
 [tool.ruff]
 exclude = [".docker_cache", "firmware"]
-target-version = "py310"
+target-version = "py39"
 
 [tool.ruff.lint]
 # Rules documentation: https://docs.astral.sh/ruff/rules/#flake8-bandit-s
