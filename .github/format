@@ -2,5 +2,6 @@
 # This script runs only autofixable formatters
 set -euxo pipefail
 
+cd face_tracker
 poetry run ruff format
 poetry run ruff check --fix

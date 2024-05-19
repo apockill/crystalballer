@@ -29,7 +29,7 @@ def draw_face_detection(face: FaceDetection) -> npt.NDArray[np.uint8]:
 
     spatials = []
     for left_landmark, right_landmark in zip(
-        face.left_landmarks_pix, face.right_landmarks_pix
+        face.left_landmarks_pix, face.right_landmarks_pix, strict=False
     ):
         cv2.circle(left_frame, left_landmark, 3, left_color)
         cv2.circle(right_frame, right_landmark, 3, right_color)

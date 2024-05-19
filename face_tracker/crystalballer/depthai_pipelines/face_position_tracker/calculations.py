@@ -39,7 +39,9 @@ def calculate_face_detection_from_landmarks(
     spatials: list[tuple[float, float, float]] = []
     left_landmarks_pix = []
     right_landmarks_pix = []
-    for left_landmark, right_landmark in zip(left_landmarks, right_landmarks):
+    for left_landmark, right_landmark in zip(
+        left_landmarks, right_landmarks, strict=False
+    ):
         assert left_landmark[0] >= 0.0 and left_landmark[0] <= 1.0
         assert right_landmark[1] >= 0.0 and right_landmark[1] <= 1.0
 
@@ -84,8 +86,6 @@ def landmark_to_pixels(
     """Convert a landmark from 0-1 range to pixel coordinates"""
     width = manip_config.getCropXMax() - manip_config.getCropXMin()
     height = manip_config.getCropYMax() - manip_config.getCropYMin()
-    # assert width == 640, f"width: {width}"
-    # assert height == 480, f"height: {height}"
 
     x = int(round((landmark[0] * width + manip_config.getCropXMin()) * crop_size[0]))
     y = int(round((landmark[1] * height + manip_config.getCropYMin()) * crop_size[1]))

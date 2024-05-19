@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI, WebSocket
 from pydantic import BaseModel
 
-from crystalballer.depthai_pipelines import FaceDetection, FacePositionPipeline
+from crystalballer.depthai_pipelines import FacePositionPipeline
 
 
 class FaceLocationPacket(BaseModel):
