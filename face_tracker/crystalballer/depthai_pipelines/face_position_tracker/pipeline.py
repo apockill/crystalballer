@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from functools import cached_property
-from typing import Any, Optional
+from typing import cast
 
 import blobconverter
 import depthai as dai
 import numpy as np
 from depthai import Device, Pipeline
+from typing_extensions import Self
 
 from .calculations import calculate_face_detection_from_landmarks
 from .detection import FaceDetection
@@ -48,7 +51,6 @@ class FacePositionPipeline:
     MONO_CROP_SIZE = (300, 300)
     """The size of the crop of the full mono image before image manip"""
 
-    # TODO: One possible optimization is to stop creating unecessary streams that go to the host
     def __init__(self, loglevel: dai.LogLevel = dai.LogLevel.WARN) -> None:
         self.loglevel = loglevel
         self.pipeline = self._create_pipeline()
@@ -57,7 +59,7 @@ class FacePositionPipeline:
 
         self.device = Device(self.pipeline.getOpenVINOVersion(), usb2Mode=True)
 
-    def __enter__(self) -> "FacePositionPipeline":
+    def __enter__(self) -> Self:
         """Open up the device and start outputting results to the queues"""
         self.device.__enter__()
         self.device.startPipeline(self.pipeline)
@@ -65,14 +67,14 @@ class FacePositionPipeline:
         self.device.setLogOutputLevel(self.loglevel)
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         """Close the device"""
         self.device.__exit__(exc_type, exc_val, exc_tb)
 
     def close(self) -> None:
         self.device.close()
 
-    def get_latest_face(self) -> Optional[FaceDetection]:
+    def get_latest_face(self) -> FaceDetection | None:
         """The latest face detections from the NN
 
         :return: The latest face detection, or None if no face was detected
@@ -122,7 +124,7 @@ class FacePositionPipeline:
     @property
     def new_results_ready(self) -> bool:
         """Whether there are new results ready to be read from the queues"""
-        return self.left_frame_queue.has() and self.right_frame_queue.has()
+        return cast(bool, self.left_frame_queue.has() and self.right_frame_queue.has())
 
     @cached_property
     def stereo_inference(self) -> StereoInference:
@@ -251,10 +253,6 @@ class FacePositionPipeline:
         config_xout = pipeline.create(dai.node.XLinkOut)
         config_xout.setStreamName("config_" + name)
         image_manip_script.outputs["to_manip"].link(config_xout.input)
-
-        # crop_xout = pipeline.create(dai.node.XLinkOut)
-        # crop_xout.setStreamName("crop_" + name)
-        # manip_crop.out.link(crop_xout.input)
 
         # Second NN that detcts landmarks from the cropped 48x48 face
         landmarks_nn = pipeline.create(dai.node.NeuralNetwork)

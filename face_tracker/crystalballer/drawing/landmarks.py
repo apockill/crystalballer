@@ -41,7 +41,6 @@ def draw_face_detection(face: FaceDetection) -> npt.NDArray[np.uint8]:
 
         disparity = face.stereo.calculate_distance(right_landmark, left_landmark)
         depth = face.stereo.calculate_depth(disparity)
-        # print(f"Disp {disparity}, depth {depth}")
         spatial = face.stereo.calc_spatials(right_landmark, depth)
         spatials.append(spatial)
 
