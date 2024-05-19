@@ -28,8 +28,6 @@ def main() -> None:
             cv2_visualizer=cv2_visualizer,
             face_pipeline=face_pipeline,
         )
-    except Exception as e:
-        raise e
     finally:
         del renderer
         face_pipeline.close()

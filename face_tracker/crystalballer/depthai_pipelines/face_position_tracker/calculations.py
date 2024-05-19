@@ -39,9 +39,7 @@ def calculate_face_detection_from_landmarks(
     spatials: list[tuple[float, float, float]] = []
     left_landmarks_pix = []
     right_landmarks_pix = []
-    for left_landmark, right_landmark in zip(
-        left_landmarks, right_landmarks, strict=False
-    ):
+    for left_landmark, right_landmark in zip(left_landmarks, right_landmarks):
         assert left_landmark[0] >= 0.0 and left_landmark[0] <= 1.0
         assert right_landmark[1] >= 0.0 and right_landmark[1] <= 1.0
 

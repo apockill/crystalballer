@@ -26,7 +26,6 @@ def main() -> None:
 
     with face_pipeline:
         while True:
-            print("Loop")
             face = face_pipeline.get_latest_face()
 
             if not face:

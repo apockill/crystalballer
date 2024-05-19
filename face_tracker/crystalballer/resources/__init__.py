@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Union
 
 from crystalballer.o3d_utils.stls import GlobeGeometry
 
 
-def resource_path(path: Union[Path, str]) -> Path:
+def resource_path(path: Path | str) -> Path:
     """Verify a resource path exists and return it as a Path object."""
     return Path(path).resolve(strict=True)
 

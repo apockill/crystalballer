@@ -29,7 +29,7 @@ def draw_face_detection(face: FaceDetection) -> npt.NDArray[np.uint8]:
 
     spatials = []
     for left_landmark, right_landmark in zip(
-        face.left_landmarks_pix, face.right_landmarks_pix, strict=False
+        face.left_landmarks_pix, face.right_landmarks_pix
     ):
         cv2.circle(left_frame, left_landmark, 3, left_color)
         cv2.circle(right_frame, right_landmark, 3, right_color)
@@ -41,7 +41,6 @@ def draw_face_detection(face: FaceDetection) -> npt.NDArray[np.uint8]:
 
         disparity = face.stereo.calculate_distance(right_landmark, left_landmark)
         depth = face.stereo.calculate_depth(disparity)
-        # print(f"Disp {disparity}, depth {depth}")
         spatial = face.stereo.calc_spatials(right_landmark, depth)
         spatials.append(spatial)
 

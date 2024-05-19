@@ -19,7 +19,7 @@ def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
     app = FastAPI()
 
     @app.websocket("/faces")
-    async def websocket_endpoint(websocket: WebSocket):
+    async def websocket_endpoint(websocket: WebSocket) -> None:
         await websocket.accept()
 
         while True:
@@ -53,4 +53,4 @@ def main() -> None:
 
     # Start the face pipeline and server the app
     with face_pipeline:
-        uvicorn.run(app, host="0.0.0.0", port=6942)
+        uvicorn.run(app, host="0.0.0.0", port=6942)  # noqa: S104
