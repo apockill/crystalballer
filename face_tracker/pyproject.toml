@@ -29,7 +29,6 @@ darglint = "^1.8.1"
 
 [tool.poetry.scripts]
 mobilenet_detector = "crystalballer.scripts.mobilenet_detector:main"
-face_landmark_detector = "crystalballer.scripts.face_landmark_detector:main"
 face_depth_detector = "crystalballer.scripts.face_depth_detector:main"
 rendering_experiments = "crystalballer.scripts.rendering_experiments:main"
 eyeball = "crystalballer.scripts.eyeball:main"
