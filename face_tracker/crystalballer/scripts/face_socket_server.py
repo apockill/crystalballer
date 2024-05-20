@@ -5,6 +5,9 @@ from fastapi import FastAPI, WebSocket
 from pydantic import BaseModel
 
 from crystalballer.depthai_pipelines import FacePositionPipeline
+from crystalballer.depthai_pipelines.face_position_tracker import (
+    SingleFacePositionSmoother,
+)
 
 
 class FaceLocationPacket(BaseModel):
@@ -15,7 +18,9 @@ class FaceUpdatePacket(BaseModel):
     face_locations: list[FaceLocationPacket]
 
 
-def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
+def create_api(
+    face_pipeline: FacePositionPipeline, face_smoother: SingleFacePositionSmoother
+) -> FastAPI:
     app = FastAPI()
 
     @app.websocket("/faces")
@@ -24,15 +29,15 @@ def create_api(face_pipeline: FacePositionPipeline) -> FastAPI:
 
         while True:
             # Get the latest face and package it into a packet
-            face = face_pipeline.get_latest_face()
+            face = face_smoother.get_smoothed_face()
             faces = (
                 []
                 if face is None
-                else [FaceLocationPacket(location=face.centroid.tolist())]
+                else [FaceLocationPacket(location=face.eye_centroid.tolist())]
             )
             packet = FaceUpdatePacket(face_locations=faces)
 
-            await websocket.send_text(packet.json())
+            await websocket.send_text(packet.model_dump_json())
             while not face_pipeline.new_results_ready:
                 await asyncio.sleep(0.01)
 
@@ -49,7 +54,8 @@ def main() -> None:
         websocat ws://0.0.0.:6942/faces
     """
     face_pipeline = FacePositionPipeline()
-    app = create_api(face_pipeline)
+    face_smoother = SingleFacePositionSmoother(face_pipeline)
+    app = create_api(face_pipeline, face_smoother)
 
     # Start the face pipeline and server the app
     with face_pipeline:
