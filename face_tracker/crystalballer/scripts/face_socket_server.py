@@ -29,11 +29,11 @@ def create_api(
 
         while True:
             # Get the latest face and package it into a packet
-            face = face_pipeline.get_latest_face()
+            face = face_smoother.get_smoothed_face()
             faces = (
                 []
                 if face is None
-                else [FaceLocationPacket(location=face.centroid.tolist())]
+                else [FaceLocationPacket(location=face.eye_centroid.tolist())]
             )
             packet = FaceUpdatePacket(face_locations=faces)
 

@@ -63,15 +63,18 @@ class SingleFacePositionSmoother:
         return current_time - self.last_seen_time > self.time_thresh
 
     def _create_smoothed_position(self, faces: list[FaceDetection]) -> FaceDetection:
-        # Calculate the average position of all faces
-        avg_centroid = np.mean(np.stack([face.centroid for face in faces]), axis=0)
+        # Calculate the median position of all faces
+        median_centroid = np.median(np.stack([face.centroid for face in faces]), axis=0)
+        median_landmarks = np.median(
+            np.stack([face.landmarks for face in faces]), axis=0
+        )
 
         # Create a new FaceDetection object with the averaged position
         # and other attributes from the first face in the list
         first_face = faces[0]
         smoothed_face = FaceDetection(
-            centroid=avg_centroid,
-            landmarks=first_face.landmarks,
+            centroid=median_centroid,
+            landmarks=median_landmarks,
             left_landmarks_pix=first_face.left_landmarks_pix,
             right_landmarks_pix=first_face.right_landmarks_pix,
             left_frame=first_face.left_frame,

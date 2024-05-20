@@ -55,6 +55,10 @@ class FaceDetection:
     def left_eye(self) -> POINT:
         return cast(POINT, self.landmarks[1])
 
+    @property
+    def eye_centroid(self) -> npt.NDArray[np.float64]:
+        return np.mean(self.landmarks[:2], axis=0)
+
     def distance(self, other: "FaceDetection") -> float:
         """Return the distance in meters from the other face"""
         return cast(float, norm(self.centroid - other.centroid))
