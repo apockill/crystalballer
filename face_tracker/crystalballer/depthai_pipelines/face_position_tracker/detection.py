@@ -3,6 +3,7 @@ from typing import cast
 
 import numpy as np
 import numpy.typing as npt
+from numpy.linalg import norm
 
 from crystalballer.depthai_pipelines.face_position_tracker.stereo import StereoInference
 
@@ -45,3 +46,7 @@ class FaceDetection:
     @property
     def z(self) -> float:
         return cast(float, self.centroid[2])
+
+    def distance(self, other: "FaceDetection") -> float:
+        """Return the distance in meters from the other face"""
+        return cast(float, norm(self.centroid - other.centroid))
