@@ -47,6 +47,14 @@ class FaceDetection:
     def z(self) -> float:
         return cast(float, self.centroid[2])
 
+    @property
+    def right_eye(self) -> POINT:
+        return cast(POINT, self.landmarks[0])
+
+    @property
+    def left_eye(self) -> POINT:
+        return cast(POINT, self.landmarks[1])
+
     def distance(self, other: "FaceDetection") -> float:
         """Return the distance in meters from the other face"""
         return cast(float, norm(self.centroid - other.centroid))
