@@ -26,6 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd face_tracker
           python -m pip install --upgrade pip
           python -m pip install --upgrade poetry
           poetry install
